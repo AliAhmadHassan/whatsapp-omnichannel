@@ -1,0 +1,83 @@
+﻿@model IEnumerable<WWeb.UI.WebformMVC.Models.Situacao>
+    @using MvcModalDialog
+    @{
+        ViewBag.Title = "Relatório de Situações";
+        Layout = "~/Views/Shared/_Layout.cshtml";
+    }
+
+    <div id="tabela" class="grid">
+        <br />
+        <div id="nome-pagina">
+            » Clientes x Situações
+        </div>
+        <br />
+        <br />
+        <table class="footable" data-page-size="1000">
+            <caption>
+                &nbsp;&nbsp;&nbsp;&nbsp;Clientes x Situações
+            </caption>
+
+            <thead>
+                <tr>
+                    <th style="width:50px;">
+                        Id
+                    </th>
+                    <th>
+                        Descrição
+                    </th>
+                    <th style="width:100px;">
+                        Bloqueada
+                    </th>
+                    <th style="width:120px;">
+                        Total Clientes
+                    </th>
+                    <th>
+
+                    </th>
+                </tr>
+            </thead>
+
+            <tbody>
+                @foreach (WWeb.UI.WebformMVC.Models.Situacao item in Model)
+            {
+                    <tr>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.Id)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.Descricao)
+                        </td>
+                        <td style="text-align:center;">
+                            @if (item.Bloqueado.Value)
+                            {
+                                <input type="checkbox" name="cb_@(item.Id)" checked="checked" class="check_all_item" />
+                            }
+                            else
+                            {
+                                <input type="checkbox" name="cb_@(item.Id)" class="check_all_item" />
+                            }
+                        </td>
+
+                        <td style="text-align:center;">
+                            @Html.DisplayFor(modelItem => item.Cliente.Count)
+                        </td>
+
+                        <td style="width:60px; text-align:center;">
+                            <a href='@Url.Action("ColocarFila", "Relatorios",new { id_situacao = item.Id })'>
+                                <img src='@Url.Content("~/Content/img/btn-ativar-conversa.png")' title="Colocar clientes na fila" onclick="return confirm('Deseja colocar os clientes navamente na fila?')" />
+                            </a>
+                            @Ajax.ActionImageLink("../Content/img/btn-detalhes.png", "Clientes", "Relatorios", new { @id_situacao = item.Id }, "Visualizar clientes")
+                        </td>
+                    </tr>
+                }
+            </tbody>
+            <tfoot class="hide-if-no-paging" style="text-align:center">
+                <tr>
+                    <td colspan="5" style="height:30px; text-align:center; background-color:#cccccc; color:#444444; line-height:30px;">
+                        Registro(s) Encontrado(s): @Model.Count().ToString("0000")
+                        <div class="pagination pagination-centered"></div>
+                    </td>
+                </tr>
+            </tfoot>
+        </table>
+    </div>

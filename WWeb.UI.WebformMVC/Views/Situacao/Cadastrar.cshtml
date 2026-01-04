@@ -1,0 +1,35 @@
+﻿@model WWeb.UI.WebformMVC.Models.Situacao
+<div class="content_create">
+
+    @using (Html.BeginForm())
+    {
+        @Html.AntiForgeryToken()
+        @Html.ValidationSummary()
+
+        <table style="width:100%;">
+            <tr>
+                <td>
+                    <div class="editor-field">
+                        <input type="checkbox" name="cb_bloqueada" /> Bloqueada
+                    </div>
+                </td>
+            </tr>
+            <tr>
+                <td>
+
+                    <div class="editor-label">
+                        Descrição
+                    </div>
+
+                    <div class="editor-field">
+                        @Html.TextAreaFor(model => model.Descricao)
+                        @Html.ValidationMessageFor(model => model.Descricao)
+                    </div>
+                </td>
+            </tr>
+        </table>
+        <p>
+            <input type="submit" value="Cadastrar" />
+        </p>
+    }
+</div>

@@ -1,0 +1,93 @@
+﻿@model IEnumerable<WWeb.UI.WebformMVC.Models.Chavewhatsapp>
+    @using MvcModalDialog
+
+    <div id="tabela" class="grid">
+
+        <table class="footable" data-page-size="10">
+            <caption>
+                &nbsp;&nbsp;&nbsp;&nbsp;Status dos robôs em execução
+            </caption>
+
+            <thead>
+                <tr>
+                    <th>
+                        Carteira
+                    </th>
+                    <th>
+                        Ip
+                    </th>
+                    <th>
+                        Telefone Orcozol
+                    </th>
+                    <th>
+                        Qtd. Clientes
+                    </th>
+                    <th>
+                        Status Envio
+                    </th>
+
+                    <th>
+                        Data/Hora Envio
+                    </th>
+                    <th>
+                        Status Leitura
+                    </th>
+
+                    <th>
+                        Data/Hora Leitura
+                    </th>
+                    <th></th>
+                </tr>
+            </thead>
+
+            <tbody>
+                @foreach (WWeb.UI.WebformMVC.Models.Chavewhatsapp item in Model)
+                {
+                    if (item.TelefoneOrcozol.Contains("000000")) { continue; }
+                    <tr>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.Carteira)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.IpMaquinaVirtual)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.TelefoneOrcozol)
+                        </td>
+                        <td>
+                            @(new WWeb.UI.WebformMVC.Models.BLL.ClienteBLL().QtdClienteXTelefoneOrcozol(item.TelefoneOrcozol).ToString("0000"))
+                        </td>
+                        <td>
+                            @if (item.StatusRoboEnvio == 0)
+                            {
+                                <span style="color:red">Com Falha</span>
+                            }
+                            else
+                            {
+                                <span>Em Execução</span>
+                            }
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.DataHoraStatusEnvio)
+                        </td>
+                        <td>
+                            @if (item.StatusRoboLeitura == 0)
+                            {
+                                <span style="color:red">Com Falha</span>
+                            }
+                            else
+                            {
+                                <span>Em Execução</span>
+                            }
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.DataHoraStatusLeitura)
+                        </td>
+                        <td style="text-align:center" align="center">
+                            @Ajax.ActionImageLink("../../Content/img/btn-detalhes.png", "ClientesXTelefone", "Dashboard", new { telefone_orcozol = item.TelefoneOrcozol }, "Visualizar Clientes")
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>

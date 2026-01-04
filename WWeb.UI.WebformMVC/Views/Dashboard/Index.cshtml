@@ -1,0 +1,122 @@
+﻿@using MvcModalDialog
+@{
+    ViewBag.Title = "Dashboard Whatsapp Orcozol";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+
+    string inicio = ViewBag.Inicio;
+    string fim = ViewBag.Fim;
+
+    List<WWeb.UI.WebformMVC.Tb_Usuario> usuarios = new List<WWeb.UI.WebformMVC.Tb_Usuario>();
+    foreach (var item in WWeb.UI.WebformMVC.WWebSessaoGlobal.UsuariosOnLines)
+    {
+        usuarios.Add(item.Usuario);
+    }
+}
+
+@System.Web.Optimization.Scripts.Render("~/bundles/highchart")
+<script src="~/Scripts/Highcharts-3.0.1/js/themes/grid.js"></script>
+<script src="~/Scripts/Dashboard.js"></script>
+
+@using (Html.BeginForm())
+{
+    @Html.AntiForgeryToken()
+    @Html.ValidationSummary()
+
+    <div id="tabela" class="grid">
+        <br />
+        <div id="nome-pagina">
+            » Dashboard
+        </div>
+        <br />
+        <br />
+        <table style="width:400px;">
+            <tr>
+                <th>Início</th>
+                <th>Fim</th>
+                <th></th>
+            </tr>
+            <tr>
+                <td>@Html.TextBox("data_inicio", inicio, new { @class = "data" })</td>
+                <td>@Html.TextBox("data_fim", fim, new { @class = "data" })</td>
+                <td><input type="submit" value="Buscar" id="submit" /></td>
+            </tr>
+        </table>
+
+        <br />
+        <fieldset style="border:1px solid #fff; color:#fff; text-align:left">
+            <legend style="color:#fff;">Usuário On-lines: </legend>
+            <table class="footable" data-page-size="10">
+                <caption>
+                    &nbsp;&nbsp;&nbsp;&nbsp;Operadores
+                </caption>
+                <thead>
+                    <tr>
+                        <th style="width:80px;">Id</th>
+                        <th>Nome</th>
+                        <th></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (WWeb.UI.WebformMVC.Tb_Usuario usu in usuarios)
+                    {
+                        <tr>
+                            <td>@usu.Us_ID</td>
+                            <td>@usu.Us_Nome</td>
+                            <td style="width:30px; text-align:center;">
+                                <a href='@Url.Action("FinalizarSessao", "Dashboard", new { @us_id = usu.Us_ID })'>
+                                <img src='@Url.Content("~/Content/img/btn-delete2.png")' title="Finalizar sessão do usuário @(usu.Us_Nome)" onclick="return confirm('Finalizar sessão do usuário @(usu.Us_Nome)?')" />
+                                </a>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </fieldset>
+        <br />
+        <fieldset style="border:1px solid #fff; color:#fff; text-align:left">
+            <legend style="color:#fff;">Robôs em execução: </legend>
+            @Html.Action("StatusRobos", "Dashboard")
+        </fieldset>
+        <br />
+    </div>
+
+    <table style="width:100%;" align="center" border="0">
+        <tr>
+            <td style="width:30%;">
+                <div id="mensagemxusuario" style="width:100%;">
+                    @Html.Action("UsuarioXMensagens", "Dashboard", new { @inicio = Convert.ToDateTime(inicio, new System.Globalization.CultureInfo("pt-BR")), @fim = Convert.ToDateTime(fim, new System.Globalization.CultureInfo("pt-BR")) })
+                </div>
+            </td>
+            <td style="width:30%;">
+                <div id="clienteacionamento" style="width:100%;">
+                    @Html.Action("ClienteAcionamento", "Dashboard", new { @inicio = Convert.ToDateTime(inicio, new System.Globalization.CultureInfo("pt-BR")), @fim = Convert.ToDateTime(fim, new System.Globalization.CultureInfo("pt-BR")) })
+                </div>
+            </td>
+            <td style="width:40%;">
+                <div id="mensagemxdia" style="width:100%;">
+                    @Html.Action("MensagensXData", "Dashboard", new { @inicio = Convert.ToDateTime(inicio, new System.Globalization.CultureInfo("pt-BR")), @fim = Convert.ToDateTime(fim, new System.Globalization.CultureInfo("pt-BR")) })
+                </div>
+            </td>
+        </tr>
+        <tr style="width:100%; background-color:transparent;">
+            <td style="width:100%; background-color:transparent;" colspan="3">
+                <div id="mensagemxusuariocount" style="width:100%;">
+                    @Html.Action("UsuarioXMensagensQuantidade", "Dashboard", new { @inicio = Convert.ToDateTime(inicio, new System.Globalization.CultureInfo("pt-BR")), @fim = Convert.ToDateTime(fim, new System.Globalization.CultureInfo("pt-BR")) })
+                </div>
+            </td>
+        </tr>
+        <tr style="width:100%; background-color:transparent;">
+            <td style="width:100%; background-color:transparent;" colspan="2">
+                <div id="mensagemhorahora" style="width:100%;">
+                    @Html.Action("MensagensHoraHora", "Dashboard", new { @inicio = Convert.ToDateTime(inicio, new System.Globalization.CultureInfo("pt-BR")), @fim = Convert.ToDateTime(fim, new System.Globalization.CultureInfo("pt-BR")) })
+                </div>
+            </td>
+            <td style="width:100%; background-color:transparent;" colspan="2">
+                <div id="mensagemhorahora" style="width:100%;">
+                    @Html.Action("ClienteHoraHora", "Dashboard", new { @inicio = Convert.ToDateTime(inicio, new System.Globalization.CultureInfo("pt-BR")), @fim = Convert.ToDateTime(fim, new System.Globalization.CultureInfo("pt-BR")) })
+                </div>
+            </td>
+        </tr>
+    </table>
+
+}

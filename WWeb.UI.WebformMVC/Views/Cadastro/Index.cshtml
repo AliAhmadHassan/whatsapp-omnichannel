@@ -1,0 +1,76 @@
+﻿@model IEnumerable<WWeb.UI.WebformMVC.Models.MensagemPredefinida>
+
+    @using MvcModalDialog
+    @{
+        ViewBag.Title = "Cadastro de Mensagens";
+        Layout = "~/Views/Shared/_Layout.cshtml";
+    }
+
+    <div id="tabela" class="grid">
+        <br />
+        <div id="nome-pagina">
+            » Mensagens Cadastradas
+        </div>
+        <br /><br />
+        <table class="footable" data-page-size="10">
+            <caption>
+                &nbsp;&nbsp;&nbsp;&nbsp;Mensagens Encontradas
+                @Ajax.ActionImageLink("../Content/img/btn-add3.png", "CadastrarMensagem", "Cadastro", null, "Cadastrar nova mensagem")
+            </caption>
+
+            <thead>
+                <tr>
+                    <th style="width:50px;">
+                        @Html.DisplayNameFor(model => model.Id)
+                    </th>
+                    <th>
+                        @Html.DisplayNameFor(model => model.Mensagem)
+                    </th>
+                    <th style="width:100px;">
+                        @Html.DisplayNameFor(model => model.Bloqueada)
+                    </th>
+                    <th style="width:50px;text-align:center;">#</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (WWeb.UI.WebformMVC.Models.MensagemPredefinida item in Model)
+            {
+                    <tr>
+                        <td style="width:50px;">
+                            @Html.DisplayFor(modelItem => item.Id)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.Mensagem)
+                        </td>
+                        <td align="center" style="text-align:center;">
+                            @if (item.Bloqueada.Value)
+                            {
+                                <input type="checkbox" name="cb_@(item.Id)" checked="checked" class="check_all_item" />
+                            }
+                            else
+                            {
+                                <input type="checkbox" name="cb_@(item.Id)" class="check_all_item" />
+                            }
+                        </td>
+
+                        <td style="width:60px; text-align:center;">
+                            @Ajax.ActionImageLink("../Content/img/btn-editar.png", "EditarMensagem", "Cadastro", new { id_mensagem = item.Id }, "Alterar Mensagem predefinida")
+                            <a href='@Url.Action("DeletarMensagem", "Cadastro",new { id = item.Id })'>
+                                <img src='@Url.Content("~/Content/img/btn-delete2.png")' title="Apagar Mensagem" onclick="return confirm('Deseja excluir este registro?')" />
+                            </a>
+                        </td>
+                    </tr>
+                }
+
+            </tbody>
+            <tfoot class="hide-if-no-paging" style="text-align:center">
+                <tr>
+                    <td colspan="4" style="height:30px; text-align:center; background-color:#cccccc; color:#444444; line-height:30px;">
+                        Registro(s) Encontrado(s): @Model.Count().ToString("0000")
+                        <div class="pagination pagination-centered"></div>
+                    </td>
+                </tr>
+            </tfoot>
+        </table>
+
+    </div>

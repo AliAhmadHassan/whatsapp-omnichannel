@@ -1,0 +1,38 @@
+﻿@using (Html.BeginForm("Cadastro", "Enriquecimento", FormMethod.Post, new { enctype = "multipart/form-data" }))
+{
+    @Html.AntiForgeryToken()
+    @Html.ValidationSummary()
+
+    <div class="content_create">
+        <table style="width:100%;">
+            <tr>
+                <td>
+
+                    <div class="editor-label">
+                        Descrição
+                    </div>
+
+                    <div class="editor-field">
+                        @Html.TextArea("txt_descricao")
+                    </div>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <div class="editor-label">
+                        Arquivo
+                    </div>
+
+                    <div class="editor-field">
+                        <input type="file" id="file" name="file" />
+                    </div>
+                </td>
+            </tr>
+        </table>
+        <p>
+            <input type="submit" value="Cadastrar" />
+        </p>
+    </div>
+}
+
+

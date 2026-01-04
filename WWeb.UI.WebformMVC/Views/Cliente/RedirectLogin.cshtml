@@ -1,0 +1,19 @@
+﻿
+<div style="width:95%; height:100%; border:1px solid red; padding:10px;">
+    <marquee>ATENÇÃO!</marquee>
+    <p style="text-align:center">Sessão finalizada, redicionando usuário para a página de login</p>
+    <script type="text/javascript">
+        var contador = 50;
+        var protocolo = window.location.protocol;
+        var root_site = window.location.host;
+        var uri = protocolo + '//' + root_site;
+        var handler_consulta = setInterval(window.location.replace(uri + '/Inicio/Login'), 10000);
+
+    </script>
+
+    <table style="width:100%; height:100%;">
+        <tr>
+            <td align="center" valign="middle">Redirecionando para página de login em: <span id="span_contador" style="font-size:25px; color:red;">10 segundos</span></td>
+        </tr>
+    </table>
+</div>

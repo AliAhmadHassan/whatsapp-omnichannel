@@ -1,0 +1,180 @@
+﻿@model IEnumerable<WWeb.UI.WebformMVC.Models.DTO.ClienteStatusDTO>
+
+    @using MvcModalDialog
+
+    @{
+        ViewBag.Title = "Index";
+        Layout = "~/Views/Shared/_Layout.cshtml";
+    }
+    <script type="text/javascript">
+        function buscar() {
+
+            var inicio = $('#txt_inicio').val();
+            var fim = $('#txt_fim').val();
+
+            if (inicio == '' || fim == '') {
+                alert('Preencher as datas de inici e fim');
+                return;
+            }
+
+            var protocolo = window.location.protocol;
+            var root_site = window.location.host;
+            var uri = protocolo + '//' + root_site;
+
+            inicio = $('#txt_inicio').val().split('/')[2] + "-" + $('#txt_inicio').val().split('/')[1] + "-" + $('#txt_inicio').val().split('/')[0];
+            fim = $('#txt_fim').val().split('/')[2] + "-" + $('#txt_fim').val().split('/')[1] + "-" + $('#txt_fim').val().split('/')[0];
+
+            window.location.href = uri + '/Cliente/Buscar?inicio=' + inicio + '&fim=' + fim;
+        }
+
+    </script>
+    <div id="tabela" class="grid">
+        <br />
+
+        <div id="nome-pagina">
+            » Clientes Cadastrados
+        </div>
+
+        <br />
+        <table class="footable" data-page-size="10">
+            <caption>
+                &nbsp;&nbsp;&nbsp;&nbsp;Clientes Cadastrados
+                @Ajax.ActionImageLink("../Content/img/btn-detalhes.png", "RetornarTodosClientesOnlines", "Cliente", null, "Visualizar clientes que estão aguardando atendimento")
+
+              
+                <div style="float:right; border:1px solid #fff; margin-right:35px; padding-right:10px; padding-left:10px;">
+                    <span style="float:right; font-size:12px; color:#fff; margin-top:3px; cursor:pointer;">
+                        <img src="~/Content/img/buscar_filtro.png" onclick="buscar()" />
+                    </span>
+
+                    <span style="float:right; font-size:12px; color:#fff; margin-right:5px;">Data fim: <input type="text" id="txt_fim" value="@(ViewBag.Inicio)" style="width:80px;" /></span>
+                    <span style="float:right; font-size:12px; color:#fff; margin-right:20px;">Data inicio: <input type="text" id="txt_inicio" value="@(ViewBag.Fim)" style="width:80px;" /></span>
+                </div>
+                <span style="float:right; font-size:12px; color:#fff; margin-right:5px;">
+                    Filtrar clientes pela data:
+                </span>
+
+            </caption>
+
+            <thead>
+                <tr>
+                    <th style="width:130px;">
+                        Telefone Cliente
+                    </th>
+                    <th>
+                        Nome Cliente
+                    </th>
+                    <th style="width:130px;">
+                        CPF
+                    </th>
+
+                    <th style="width:160px;">
+                        Últ. Visualização
+                    </th>
+                    <th style="width:160px;">
+                        Data Cadastro
+                    </th>
+                    <th style="width:160px;">
+                        Status
+                    </th>
+                    <th>
+
+                    </th>
+                </tr>
+            </thead>
+
+            <tbody>
+                @foreach (WWeb.UI.WebformMVC.Models.DTO.ClienteStatusDTO item in Model)
+            {
+                    <tr>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.TelefoneCliente)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.NomeCliente)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.Cpf)
+                        </td>
+
+                        <td>
+                            @Html.DisplayFor(modelItem => item.DataVisualizacao)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.DataHoraRegistro)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.Descricao)
+                        </td>
+
+                        <td style="width:60px; text-align:center;">
+                            @Ajax.ActionImageLink("../Content/img/zap5.png", "Conversa", "BatePapo", new { @telefone_cliente = item.TelefoneCliente, @nome_cliente = item.NomeCliente, @telefone_orcozol = new WWeb.UI.WebformMVC.Models.WWebEntities().Telefones.Where(t => t.TelefoneCliente == item.TelefoneCliente).FirstOrDefault().TelefoneOrcozol, @cpf_cliente = item.Cpf }, "Visualização da Negociação")
+                            <a href="#" id="btn-ativar-conversa" title="Colocar cliente na fila de conversas ativas" onclick="EnviarParaFila('@(item.TelefoneCliente)')">
+                                <img src="~/Content/img/btn-ativar-conversa.png" />
+                            </a>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+
+            <tfoot class="hide-if-no-paging" style="text-align:center">
+                <tr>
+                    <td colspan="8" style="height:30px; text-align:center; background-color:#cccccc; color:#444444; line-height:30px;">
+                        @if (ViewBag.Pagina > 1)
+                        {
+                            <a href='@Url.Action("Index", "Cliente", new { @pagina = ViewBag.Pagina - 1 })'>
+                                <img src="~/Content/img/voltar.png" align="middle" title="<< Clique para voltar uma paginação" />
+                            </a>
+                        }
+
+                        @if (ViewBag.Pagina > 1)
+                        {
+                            <span>Exibindo de @(((ViewBag.Pagina - 1) * 30 + 1)) até @(((ViewBag.Pagina - 1) * 30 + 30))</span>
+                        }
+                        else
+                        {
+                            <span>Exibindo de 1 até @(Model.Count())</span>
+                        }
+
+                        <a href='@Url.Action("Index","Cliente",new { @pagina=ViewBag.Pagina + 1})'>
+                            <img src="~/Content/img/avancar.png" align="middle" title="Clique para avançar uma paginação >>" />
+                        </a>
+
+                        <div class="pagination pagination-centered">
+
+                        </div>
+                    </td>
+                </tr>
+            </tfoot>
+
+        </table>
+    </div>
+
+    <script>
+        $(function () {
+
+            $("#txt_inicio").datepicker({
+                dateFormat: 'dd/mm/yy',
+                dayNames: ['Domingo', 'Segunda', 'Terça', 'Quarta', 'Quinta', 'Sexta', 'Sábado'],
+                dayNamesMin: ['D', 'S', 'T', 'Q', 'Q', 'S', 'S', 'D'],
+                dayNamesShort: ['Dom', 'Seg', 'Ter', 'Qua', 'Qui', 'Sex', 'Sáb', 'Dom'],
+                monthNames: ['Janeiro', 'Fevereiro', 'Março', 'Abril', 'Maio', 'Junho', 'Julho', 'Agosto', 'Setembro', 'Outubro', 'Novembro', 'Dezembro'],
+                monthNamesShort: ['Jan', 'Fev', 'Mar', 'Abr', 'Mai', 'Jun', 'Jul', 'Ago', 'Set', 'Out', 'Nov', 'Dez'],
+                nextText: 'Próximo',
+                prevText: 'Anterior'
+            });
+
+            $("#txt_fim").datepicker({
+                dateFormat: 'dd/mm/yy',
+                dayNames: ['Domingo', 'Segunda', 'Terça', 'Quarta', 'Quinta', 'Sexta', 'Sábado'],
+                dayNamesMin: ['D', 'S', 'T', 'Q', 'Q', 'S', 'S', 'D'],
+                dayNamesShort: ['Dom', 'Seg', 'Ter', 'Qua', 'Qui', 'Sex', 'Sáb', 'Dom'],
+                monthNames: ['Janeiro', 'Fevereiro', 'Março', 'Abril', 'Maio', 'Junho', 'Julho', 'Agosto', 'Setembro', 'Outubro', 'Novembro', 'Dezembro'],
+                monthNamesShort: ['Jan', 'Fev', 'Mar', 'Abr', 'Mai', 'Jun', 'Jul', 'Ago', 'Set', 'Out', 'Nov', 'Dez'],
+                nextText: 'Próximo',
+                prevText: 'Anterior'
+            });
+
+
+        });
+    </script>

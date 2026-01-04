@@ -1,0 +1,64 @@
+﻿@model IEnumerable<WWeb.UI.WebformMVC.Models.Cliente>
+    @using MvcModalDialog
+
+    <div id="tabela" class="grid">
+        <br />
+
+        <table class="footable" data-page-size="10">
+            <caption>
+                &nbsp;&nbsp;&nbsp;&nbsp;Registro(s) Encontrado(s): @Model.Count().ToString("0000")
+            </caption>
+
+            <thead>
+                <tr>
+                    <th style="width:150px;">
+                        Telefone Cliente
+                    </th>
+                    <th>
+                        Nome Cliente
+                    </th>
+                    <th style="width:180px;">
+                        CPF
+                    </th>
+                    <th></th>
+                </tr>
+            </thead>
+
+            <tbody>
+                @foreach (WWeb.UI.WebformMVC.Models.Cliente item in Model)
+            {
+                    <tr>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.TelefoneCliente)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.NomeCliente)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.Cpf)
+                        </td>
+
+                        <td style="width:50px; text-align:center;">
+                            @Ajax.ActionImageLink("../Content/img/zap5.png", "Conversa", "BatePapo", new { @telefone_cliente = item.TelefoneCliente, @nome_cliente = item.NomeCliente, @telefone_orcozol = new WWeb.UI.WebformMVC.Models.WWebEntities().Telefones.Where(t => t.TelefoneCliente == item.TelefoneCliente).FirstOrDefault().TelefoneOrcozol, @cpf_cliente = item.Cpf }, "Visualização da Negociação")
+                            
+                            <a href="#" id="btn-ativar-conversa" title="Colocar cliente na fila de conversas ativas" onclick="EnviarParaFila('@(item.TelefoneCliente)')">
+                                <img src="~/Content/img/btn-ativar-conversa.png" />
+                            </a>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+
+            <tfoot class="hide-if-no-paging" style="text-align:center">
+                <tr>
+                    <td colspan="8" style="height:30px; text-align:center; background-color:#cccccc; color:#444444; line-height:30px;">
+                        Registro(s) Encontrado(s): @Model.Count().ToString("0000")
+                        <div class="pagination pagination-centered"></div>
+                    </td>
+                </tr>
+            </tfoot>
+        </table>
+
+
+
+    </div>

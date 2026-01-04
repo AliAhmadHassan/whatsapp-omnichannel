@@ -1,0 +1,191 @@
+﻿@using MvcModalDialog
+@{
+    //int total_conversa = Convert.ToInt32((Session["ConversaAtiva"] as List<WWeb.UI.WebformMVC.Models.Cliente>).Count);
+    int total_conversa = WWeb.UI.WebformMVC.WWebSessaoGlobal.ClientesEmNegociacao.Count;
+    int max_conversa = Convert.ToInt32(ViewBag.MaxConversa);
+    int status = Convert.ToInt32(ViewBag.StatusCliente);
+
+    List<SelectListItem> situacoes_itens = new List<SelectListItem>();
+    List<WWeb.UI.WebformMVC.Models.Situacao> situacoes = new List<WWeb.UI.WebformMVC.Models.Situacao>();
+
+    using (WWeb.UI.WebformMVC.Models.WWebEntities ctx = new WWeb.UI.WebformMVC.Models.WWebEntities())
+    {
+        situacoes = ctx.Situacao.Where(s => s.Bloqueado == false).ToList();
+    }
+
+    situacoes_itens.Add(new SelectListItem() { Text = "Selecione uma opção", Value = "0" });
+    foreach (WWeb.UI.WebformMVC.Models.Situacao sit in situacoes.OrderBy(s => s.Descricao).ToList())
+    {
+        SelectListItem item = new SelectListItem() { Text = sit.Descricao.ToUpper(), Value = sit.Id.ToString(), Selected = status == sit.Id ? true : false };
+        situacoes_itens.Add(item);
+    }
+}
+
+@System.Web.Optimization.Scripts.Render("~/bundles/jquery")
+@System.Web.Optimization.Scripts.Render("~/bundles/jqueryui")
+@System.Web.Optimization.Scripts.Render("~/bundles/jqueryval")
+@System.Web.Optimization.Scripts.Render("~/bundles/modernizr")
+@System.Web.Optimization.Styles.Render("~/Content/themes/base/css")
+@System.Web.Optimization.Styles.Render("~/Content/popup")
+
+<input type="hidden" id="hdn_telefonecliente" value="@(ViewBag.TelefoneCliente)">
+<input type="hidden" id="hdn_telefoneorcozol" value="@(ViewBag.TelefoneOrcozol)">
+<input type="hidden" id="hdn_urlcrm" value="@(ViewBag.Crm)">
+<input type="hidden" id="hdn_timeout" value="@(ViewBag.Timeout)">
+
+<script type="text/javascript">
+    var contador = 0;
+    $(document).tooltip({ position: { my: "left center", at: "right+10 center", collision: "flipfit" }, tooltipClass: "tooltip_classe" });
+
+    function TimeoutSessao() {
+        if (contador <= 0) {
+            document.getElementById('txt_mensagem').innerHTML = 'Conversa Expirada!';
+            EnviarMensagem();
+            window.close();
+        }
+
+        contador--;
+
+        $('#sessao_timeout').html((new Date).clearTime().addSeconds(contador).toString('H:mm:ss'));
+    }
+
+    var intervalo_consulta = self.setInterval(function () { TimeoutSessao() }, 1000);
+
+</script>
+<div id="loader-bg" class="loader-bg">
+    <div id="loader-spin" style="z-index:9999999">
+
+    </div>
+</div>
+<table style="width:100%; border:1px solid #efefef; font-family:'Trebuchet MS'">
+    <tr>
+        <td>
+            <table cellpadding="2" cellspacing="1" style="width:100%; height:170px; padding:0px; color:#333333;">
+                @*<tr>
+                        <td rowspan="4" style="width:165px;padding:1px;">
+                            @{
+                                var base64 = Convert.ToBase64String(ViewBag.FotoCliente);
+                                var imgSrc = String.Format("data:image/gif;base64,{0}", base64);
+                            }
+
+                            <img src="@imgSrc" style="width:160px; height:160px; position:absolute; margin-top:-80px; border:5px solid #efefef;" id="img-foto" />
+                        </td>
+                    </tr>*@
+                <tr>
+                    <td style="height:45px; padding-left:20px;border-bottom:1px solid #efefef;">
+                        <span style="font-size:12px;">
+                            <strong>Nome Cliente</strong>
+                        </span><br />
+                        <input type="text" id="txt_nomecliente" style="border:none; width:100%; font-size:30px; color:#555555;" value="@(ViewBag.NomeCliente)" />
+                    </td>
+                </tr>
+                <tr>
+                    <td style="padding:0;height:40px; padding-left:20px; vertical-align:bottom;border-bottom:1px solid #efefef;">
+                        <table style="width:50%;">
+                            <tr>
+                                <td style="width:50%;border-right:1px solid #efefef;color:#555555;">
+                                    <span style="font-size:12px;color:#333333;"><strong>Telefone</strong></span><br />
+                                    @(ViewBag.TelefoneCliente)
+                                </td>
+                                <td style="width:50%;color:#555555;">
+                                    <span style="font-size:12px;color:#333333;"><strong>CPF/CNPJ</strong></span><br />
+                                    <input type="text" id="txt_cpfcliente" style="border:none; width:100%;padding:5px;" value="@(ViewBag.CpfCliente)" />
+                                </td>
+                            </tr>
+                        </table>
+                    </td>
+                </tr>
+                <tr>
+                    <td style="padding:0;height:40px; padding-left:20px; vertical-align:bottom;border-bottom:1px solid #efefef;" valign="top">
+                        <table style="width:100%">
+                            <tr>
+                                <td style="width:50%;border-right:1px solid #efefef;color:#555555;font-size:16px;" valign="top">
+                                    <span style="font-size:12px;color:#333333;"><strong>Situação da Conversa</strong></span><br />
+                                    @Html.DropDownList("Sit_ID", situacoes_itens, new { @style = "width:280px; height:30px; border:0px solid #efefef; color:#666666;font-size:16px;", @id = "Sit_ID" })
+                                    @*<select style="width:280px; height:30px; border:1px solid #efefef; color:#808080;">
+                                            <option>Teste 0001</option>
+                                            <option>Teste 0002</option>
+                                            <option>Teste 0003</option>
+                                            <option>Teste 0004</option>
+                                            <option>Teste 0005</option>
+                                        </select>*@
+                                </td>
+                                <td style="width:50%;color:#555555;text-align:right" align="right">
+
+                                    <img src="~/Content/img/btn-atualizar-cliente.png" style="margin-left:15px; width:40px; cursor:pointer;" title="Atualizar os dados do cliente" id="btn_atualizar_nome" />
+                                    <img src="~/Content/img/btn-abrir-cobnet.png" style="margin-left:20px; width:40px; cursor:pointer;" title="Consulta cliente no CRM Cobnet" id="btn_buscar_cobnet" />
+                                    <br /><span id="span-mensagem" style="color:deepskyblue; font-size:11px;"></span>
+                                </td>
+                            </tr>
+                        </table>
+
+                    </td>
+                </tr>
+            </table>
+        </td>
+    </tr>
+    <tr>
+        <td style="padding:0px;">
+            <table style="width:100%;" border="0">
+                <tr>
+                    <td style="width:100%; height:40px; border-bottom:1px solid #efefef;border-top:1px solid #efefef;;border-right:1px solid #efefef;padding-left:15px;color:#555555;">Negociação</td>
+                    @*<td style="width:30%; height:40px; border-bottom:1px solid #efefef;border-top:1px solid #efefef;padding-left:15px;color:#555555;">Mensagens Predefinidas</td>*@
+                </tr>
+                <tr>
+                    <td valign="top">
+
+                        <div id="batepapo" style="height:250px; width:99%; overflow-y:scroll;padding:0px;">
+                            <ul style="list-style:none;margin: 0;padding:0;list-style-type: none; color:#333333;" id="lst_mensagens">
+                                @*<li>
+                                        <div id="msg-orcozol">
+                                            <div class="data-msg">
+                                                » Cliente: 07/07/2017 15:31:15
+                                            </div>
+                                            <hr style="width: 100%; height: 1px; border: none; background-color: #cfcfcf;" />
+                                            <div class="msg-msg" style="font-size: 12px;">
+
+                                            </div>
+
+                                        </div>
+                                    </li>
+                                    <li>
+                                        <div id="msg-cliente">
+                                            <div class="data-msg">
+                                                » Orcozol: 07/07/2017 15:31:15
+                                            </div>
+                                            <hr style="width: 100%; height: 1px; border: none; background-color: #cfcfcf;" />
+                                            <div class="msg-msg">
+
+                                            </div>
+                                        </div>
+                                    </li>*@
+                            </ul>
+                        </div>
+                        <textarea rows="4" id="txt_mensagem" style="float: left; width: 99%; height: 50px; border: 1px solid #efefef; padding: 3px; text-align: left; color:#808080; font-family:'Trebuchet MS'"></textarea>
+                    </td>
+                    @*<td>
+                            <div id="content_mensagem">
+
+                            </div>
+                        </td>*@
+                </tr>
+                <tr>
+                    <td style="text-align:right;">
+                        <img src="~/Content/img/btn-enviar-mensagem.png" style="float: left; margin-bottom:10px;margin-left:15px; width:40px; cursor:pointer;" id="btn_enviar" title="Enviar mensagem para o cliente" />
+                        <img src="~/Content/img/btn-finalizar-conversa.png" style="float: left; margin-bottom:10px;margin-left:15px; width:35px;cursor:pointer;" id="btn_finalizar_conversa" title="Finalizar conversa com o cliente" />
+                    </td>
+                    <td></td>
+                </tr>
+            </table>
+        </td>
+    </tr>
+    <tr>
+        <td style="width:69%;"></td>
+
+    </tr>
+</table>
+<div style="color:#999999;">
+    <span style="float:left">Sessão expira em: &nbsp;</span><span id="sessao_timeout"></span>
+    <img src="~/Content/img/logotipo2.png" style="float:right; width:200px;" />
+</div>
+<script src="~/Scripts/Mensagens.js"></script>

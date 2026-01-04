@@ -1,0 +1,75 @@
+﻿@{
+    string cliente = System.Configuration.ConfigurationManager.AppSettings["Application.Cliente"];
+}
+
+<!DOCTYPE html>
+
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>Login Whatsapp Orcozol</title>
+
+    @System.Web.Optimization.Scripts.Render("~/bundles/jquery")
+    @System.Web.Optimization.Scripts.Render("~/bundles/jqueryui")
+    @System.Web.Optimization.Scripts.Render("~/bundles/jqueryval")
+    @System.Web.Optimization.Scripts.Render("~/bundles/modernizr")
+
+    @System.Web.Optimization.Scripts.Render("~/bundles/wweb")
+    @System.Web.Optimization.Styles.Render("~/Content/themes/base/css")
+
+
+    <link href="~/Content/Login.css" rel="stylesheet" />
+    <link href="~/Content/loader.css" rel="stylesheet" />
+
+</head>
+<body>
+    <div id="loader-bg" class="loader-bg">
+        <div id="loader-spin" style="z-index:9999999">
+
+        </div>
+    </div>
+    <div id="logotipo-login" style="background-image: url('../../Content/img/logotipo2.png'); width:305px; height:42px; position:absolute; left:50%; margin-left:-60px; top:50%; margin-top:-215px;">
+
+    </div>
+
+    <div id="login" style="background-image:url('../../Content/img/Login-bg.png');width:496px; height:372px; left:50%; top:50%; position:absolute; margin-left:-252px; margin-top:-168px;color:#fff; text-align:center; vertical-align:central;">
+        <br /><br /><br /><br /><br /><br /><br />
+        @(cliente)
+        <table style="clear:both; padding-left:20px;color:#fff;" align="center">
+            <tr>
+                <td style="text-align:left;">
+                    Usuário
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <input id="txtUsuario" type="text" style="width:350px; height:20px; padding:2px; border:1px solid #72D160; color:#13980A;" title="informe seu usuário do Cobnet" />
+                </td>
+            </tr>
+            <tr>
+                <td style="text-align:left;">
+                    Senha
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <input type="password" id="txtSenha" style="width:350px; height:20px;padding:2px;border:1px solid #72D160;" title="Informe sua senha do Cobnet" />
+                </td>
+            </tr>
+            <tr>
+                <td style="text-align:right;">
+                    <br />
+                    <br />
+                    <input type="button" id="btn_confirmar" title="Clique para entrar na aplicação" value="Confirmar" style="border:1px solid #fff; height:30px; width:80px; padding:5px; background-color:#109608; color:#fff;" />
+                </td>
+            </tr>
+        </table>
+
+    </div>
+    <div id="div_mensagem_dialog" style="width:400px;min-height:150px;">
+
+    </div>
+
+    <script src="~/Scripts/login.js"></script>
+</body>
+</html>

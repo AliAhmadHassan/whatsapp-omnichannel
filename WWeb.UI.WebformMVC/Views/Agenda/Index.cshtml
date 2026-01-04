@@ -1,0 +1,167 @@
+﻿@using MvcModalDialog
+
+@model IEnumerable<WWeb.UI.WebformMVC.Models.DTO.AgendaDTO>
+
+<div class="grid" style="background-color:#fff;">
+    <table>
+        <caption style="cursor:pointer; background-color:darkblue;">
+            <span style="font-size:13px; color:#fff; float:left; margin-left:15px; "> Lista de Anotações - @(Model.Count().ToString("0000")) </span>
+            <span style="float:right">
+                @Ajax.ActionImageLink("../Content/img/btn-add3.png", "Cadastrar", "Agenda", null, "Criar nova anotação")
+            </span>
+            <span style="float:right; margin-right:15px;">
+                <img src="~/Content/img/btn-detalhes.png" id="btn_calendario" />
+
+            </span>
+            <span style="float:right; margin-right:5px; margin-top:-5px;">
+                <input type="text" id="datepicker">
+            </span>
+            <span style="float:right; margin-right:5px; margin-top:-2px; color:#fff; font-size:12px; ">
+                (@(ViewBag.Data))
+            </span>
+        </caption>
+
+        <tr>
+            <th>
+                Data
+            </th>
+            <th>
+                Anotação
+            </th>
+            <th>
+
+            </th>
+        </tr>
+
+        <tbody>
+            @foreach (WWeb.UI.WebformMVC.Models.DTO.AgendaDTO item in Model)
+            {
+                <tr>
+                    <td style="width:80px; text-align:left;vertical-align:middle" valign="middle">
+                        @Html.DisplayFor(modelItem => item.Data)
+                    </td>
+                    @if (item.Data < DateTime.Now.Date)
+                    {
+                        <td style="text-align:justify;text-decoration:line-through;">
+                            @item.Anotacao.ToUpper()
+                        </td>
+                    }
+                    else
+                    {
+                        <td style="text-align:justify;">
+                            @item.Anotacao.ToUpper()
+                        </td>
+                    }
+                    <td style="width:20px;text-align:left;vertical-align:middle" align="center" valign="middle">
+                        <a href='@Url.Action("Deletar", new { @id=item.AgendaId})' onclick="return confirm('Deseja excluir este registro?')">
+                            <img src="~/Content/img/btn-delete.png" style="border:none;" title="Excluir anotação" />
+                        </a>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>
+
+<script>
+    $(document).ready(function () {
+
+        function formatDate(date) {
+            var d = new Date(date),
+                month = '' + (d.getMonth() + 1),
+                day = '' + d.getDate(),
+                year = d.getFullYear();
+
+            if (month.length < 2) month = '0' + month;
+            if (day.length < 2) day = '0' + day;
+
+            return [year, month, day].join('-');
+        }
+
+        function LoadAgendaPelaData() {
+            try {
+
+                if ($('#datepicker').val() == '')
+                    return;
+
+                var protocolo = window.location.protocol;
+                var root_site = window.location.host;
+                var uri = protocolo + '//' + root_site;
+
+                var data_completa = $('#datepicker').val().split('/')[2] + "-" + $('#datepicker').val().split('/')[1] + "-" + $('#datepicker').val().split('/')[0];
+
+                $.ajax({
+                    url: uri + "/Agenda/IndexData/",
+                    dataType: 'html',
+                    type: 'GET',
+                    contentType: 'text/html',
+                    data: { data: data_completa },
+                    cache: false,
+                    async: true,
+                    context: document.body,
+                    success: function (data) {
+                        try {
+                            if (primeira_consulta) {
+
+                                $('#div-agenda').empty();
+                                $('#div-agenda').html(data);
+
+                                primeira_consulta = false;
+                                handler_consulta = setInterval(LoadClientes, intervalo_consulta);
+                            }
+                            else {
+
+                                if (data.indexOf('Sessão finalizada, redicionando usuário para a página de login') > 0) {
+                                    $('#div-agenda').empty();
+                                    $('#div-agenda').html(data);
+
+                                    return;
+                                }
+
+                                if (data.indexOf('<p>0</p>') < 0) {
+                                    $('#div-agenda').empty();
+                                    $('#div-agenda').html(data);
+
+                                    handler_consulta = setInterval(LoadClientes, intervalo_consulta);
+                                }
+                                else {
+                                    handler_consulta = setInterval(LoadClientes, intervalo_consulta);
+                                }
+                            }
+
+                        } catch (e) {
+                            alert('Entra no catch');
+                            handler_consulta = setInterval(LoadClientes, intervalo_consulta);
+                        }
+                    },
+                    error: function (request, status, err) {
+                        alert('Entra no error');
+                        handler_consulta = setInterval(LoadClientes, intervalo_consulta);
+                    }
+                });
+
+            } catch (e) {
+            }
+            finally {
+
+            }
+        }
+
+        $("#datepicker").datepicker({
+            numberOfMonths: 3,
+            dateFormat: 'dd/mm/yy',
+            dayNames: ['Domingo', 'Segunda', 'Terça', 'Quarta', 'Quinta', 'Sexta', 'Sábado'],
+            dayNamesMin: ['D', 'S', 'T', 'Q', 'Q', 'S', 'S', 'D'],
+            dayNamesShort: ['Dom', 'Seg', 'Ter', 'Qua', 'Qui', 'Sex', 'Sáb', 'Dom'],
+            monthNames: ['Janeiro', 'Fevereiro', 'Março', 'Abril', 'Maio', 'Junho', 'Julho', 'Agosto', 'Setembro', 'Outubro', 'Novembro', 'Dezembro'],
+            monthNamesShort: ['Jan', 'Fev', 'Mar', 'Abr', 'Mai', 'Jun', 'Jul', 'Ago', 'Set', 'Out', 'Nov', 'Dez'],
+            nextText: 'Próximo',
+            prevText: 'Anterior'
+        });
+
+        $('#btn_calendario').click(function () {
+            LoadAgendaPelaData()
+        });
+
+    });
+</script>

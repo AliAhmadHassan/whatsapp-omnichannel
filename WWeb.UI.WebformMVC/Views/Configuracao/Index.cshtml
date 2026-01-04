@@ -1,0 +1,84 @@
+﻿@using MvcModalDialog
+@model IEnumerable<WWeb.UI.WebformMVC.Models.Configuracao>
+
+    @{
+        Layout = "~/Views/Shared/_Layout.cshtml";
+    }
+
+    <div id="tabela" class="grid">
+        <br />
+        <div id="nome-pagina">
+            » Configurações Cadastrados
+
+        </div>
+        <br /><br />
+        <table class="footable" data-page-size="10">
+            <caption>
+                &nbsp;&nbsp;&nbsp;&nbsp;Configurações Encontrados
+                @Ajax.ActionImageLink("../Content/img/btn-add3.png", "Cadastro", "Configuracao", null, "Cadastrar nova configuração")
+            </caption>
+
+            <thead>
+                <tr>
+                    <th style="width:50px;">
+                        Id
+                    </th>
+                    <th>
+                        Descrição
+                    </th>
+                    <th style="width:100px;">
+                        Valor
+                    </th>
+                    <th style="width:100px;">
+                        Bloqueado
+                    </th>
+                    <th>
+
+                    </th>
+                </tr>
+            </thead>
+
+            <tbody>
+                @foreach (WWeb.UI.WebformMVC.Models.Configuracao item in Model)
+            {
+                    <tr>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.Id)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.Descricao)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.Valor)
+                        </td>
+                        <td align="center" style="text-align:center;">
+                            @if (item.Bloqueada.Value)
+                            {
+                                <input type="checkbox" name="cb_@(item.Id)" checked="checked" class="check_all_item" />
+                            }
+                            else
+                            {
+                                <input type="checkbox" name="cb_@(item.Id)" class="check_all_item" />
+                            }
+                        </td>
+
+                        <td style="width:50px; text-align:center;">
+                            @Ajax.ActionImageLink("../Content/img/btn-editar2.png", "Editar", "Configuracao", new { @id = item.Id }, "Editar Configuração")
+                            @*<a href='@Url.Action("Deletar", "Configuracao",new { id = item.Id })'>
+                                    <img src='@Url.Content("~/Content/img/btn-delete2.png")' title="Apagar Configuração" onclick="return confirm('Deseja excluir este registro?')" />
+                                </a>*@
+                        </td>
+                    </tr>
+                }
+            </tbody>
+
+            <tfoot class="hide-if-no-paging" style="text-align:center">
+                <tr>
+                    <td colspan="5" style="height:30px; text-align:center; background-color:#cccccc; color:#444444; line-height:30px;">
+                        Registro(s) Encontrado(s): @Model.Count().ToString("0000")
+                        <div class="pagination pagination-centered"></div>
+                    </td>
+                </tr>
+            </tfoot>
+        </table>
+    </div>

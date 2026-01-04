@@ -1,0 +1,47 @@
+﻿@model IEnumerable<WWeb.UI.WebformMVC.Models.Acesso>
+    <div class="content_create">
+
+        <table style="width:100%;">
+            <tr>
+                <td>
+                    <div class="editor-label">
+                        Departamento
+                    </div>
+                    <div class="editor-field" style="font-weight:bold;">
+                        @(ViewBag.Dep_ID) - @(ViewBag.Dep_Nome)
+                    </div>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <div class="editor-label">
+                        Acesso
+                    </div>
+                    <div class="editor-field">
+                        <div class="editor-field">
+                            @foreach (WWeb.UI.WebformMVC.Models.Acesso ac in Model)
+                            {
+                                switch (ac.Menu)
+                                {
+                                    case 1:
+                                        <b>Manutenção &nbsp;</b>
+                                        break;
+                                    case 2:
+                                        <b>Configurações &nbsp;</b>
+                                        break;
+                                    case 3:
+                                        <b>Monitoramento &nbsp;</b>
+                                        break;
+                                    case 4:
+                                        <b>Relatórios &nbsp;</b>
+                                        break;
+                                    default:
+                                        break;
+                                }
+                            }
+                        </div>
+                    </div>
+                </td>
+            </tr>
+        </table>
+    </div>

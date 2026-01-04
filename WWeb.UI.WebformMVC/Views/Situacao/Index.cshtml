@@ -1,0 +1,77 @@
+﻿@model IEnumerable<WWeb.UI.WebformMVC.Models.Situacao>
+    @using MvcModalDialog
+
+    @{
+        Layout = "~/Views/Shared/_Layout.cshtml";
+    }
+
+    <div id="tabela" class="grid">
+        <br />
+        <div id="nome-pagina">
+            » Situações Cadastradas
+        </div>
+        <br />
+        <br />
+        <table class="footable" data-page-size="10">
+            <caption>
+                &nbsp;&nbsp;&nbsp;&nbsp;Situaçoes Cadastradas
+               @Ajax.ActionImageLink("../Content/img/btn-add3.png", "Cadastrar", "Situacao", null, "Cadastrar nova situação")
+            </caption>
+
+            <thead>
+                <tr>
+                    <th style="width:50px;">
+                        Id
+                    </th>
+                    <th>
+                        Descrição
+                    </th>
+                    <th style="width:100px;">
+                        Bloqueada
+                    </th>
+                    <th>
+
+                    </th>
+                </tr>
+            </thead>
+
+            <tbody>
+                @foreach (WWeb.UI.WebformMVC.Models.Situacao item in Model)
+            {
+                    <tr>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.Id)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.Descricao)
+                        </td>
+                        <td style="text-align:center;">
+                            @if (item.Bloqueado.Value)
+                            {
+                                <input type="checkbox" name="cb_@(item.Id)" checked="checked" class="check_all_item"  />
+                            }
+                            else
+                            {
+                                <input type="checkbox" name="cb_@(item.Id)" class="check_all_item" />
+                            }
+                        </td>
+
+                        <td style="width:60px; text-align:center;">
+                            @Ajax.ActionImageLink("../Content/img/btn-editar2.png", "Editar", "Situacao", new { @id = item.Id }, "Editar Situacao")
+                            <a href='@Url.Action("Bloquear", "Situacao",new { id = item.Id })'>
+                                <img src='@Url.Content("~/Content/img/btn-delete2.png")' title="Bloquear Situação" onclick="return confirm('Deseja bloquear este registro?')" />
+                            </a>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+            <tfoot class="hide-if-no-paging" style="text-align:center">
+                <tr>
+                    <td colspan="4" style="height:30px; text-align:center; background-color:#cccccc; color:#444444; line-height:30px;">
+                        Registro(s) Encontrado(s): @Model.Count().ToString("0000")
+                        <div class="pagination pagination-centered"></div>
+                    </td>
+                </tr>
+            </tfoot>
+        </table>
+    </div>

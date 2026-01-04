@@ -1,0 +1,138 @@
+﻿@{
+    Layout = null;
+    int idUsuario = 0;
+    List<WWeb.UI.WebformMVC.Models.Acesso> acessos = new List<WWeb.UI.WebformMVC.Models.Acesso>();
+    string nome_usuario = string.Empty;
+
+    if (Session["Usuario"] != null)
+    {
+        idUsuario = (Session["Usuario"] as WWeb.UI.WebformMVC.Tb_Usuario).Us_ID;
+        var usu = WWeb.UI.WebformMVC.WWebSessaoGlobal.UsuariosOnLines.Where(u => u.Usuario.Us_ID.Equals(idUsuario)).FirstOrDefault();
+
+        if (usu == null)
+        {
+            Response.Redirect("~/Inicio/LogoutEnd");
+        }
+
+        acessos = (List<WWeb.UI.WebformMVC.Models.Acesso>)Session["Acesso"];
+
+        nome_usuario = (Session["Usuario"] as WWeb.UI.WebformMVC.Tb_Usuario).Us_Nome;
+    }
+    else
+    {
+        if (!Request.Url.LocalPath.ToLower().Contains("login"))
+        {
+            Response.Redirect("~/Inicio/Login");
+        }
+    }
+
+    string cliente = System.Configuration.ConfigurationManager.AppSettings["Application.Cliente"];
+}
+
+<!DOCTYPE html>
+
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <meta http-equiv="X-UA-Compatible" content="IE=9">
+
+    <title>Negociação Whatsapp - Orcozol</title>
+
+    @System.Web.Optimization.Scripts.Render("~/bundles/jquery")
+    @System.Web.Optimization.Scripts.Render("~/bundles/jqueryui")
+    @System.Web.Optimization.Scripts.Render("~/bundles/jqueryval")
+    @System.Web.Optimization.Scripts.Render("~/bundles/modernizr")
+    @System.Web.Optimization.Scripts.Render("~/bundles/wweb")
+
+    @System.Web.Optimization.Styles.Render("~/Content/themes/base/css")
+    @System.Web.Optimization.Styles.Render("~/Content/Css")
+
+</head>
+<body>
+
+    <div id="loader-bg" class="loader-bg">
+        <div id="loader-spin" style="z-index:9999999">
+
+        </div>
+    </div>
+
+    <div id="header">
+        <div id="logotipo">
+            <img src="~/Content/img/logotipo1.png" />
+        </div>
+        <div id="logotipo-orcozol">
+            <img src="~/Content/img/logotipo2.png" />
+        </div>
+    </div>
+
+    <div id="nome-cliente">@(cliente)</div>
+
+    <div id="nome-usuario" style="border:0px solid #000; width:500px; height:20px; position:absolute; top:40px; left:50%; margin-left:-250px; text-align:center; color:#333333; font-weight:bold;">
+        @(nome_usuario)
+    </div>
+
+    <div id="menusite">
+        <nav>
+            <ul class="menu">
+                <li><a href="#" id="btn_logout">» Sair do Sistema</a></li>
+
+                @if (acessos.Where(a => a.Menu.Equals(1)).FirstOrDefault() != null)
+                {
+                    <li>
+                        <a href="#">» Manutenção</a>
+                        <ul>
+                            <li>@Html.ActionLink("» Mensagens", "Index", "Cadastro")</li>
+                            <li>@Html.ActionLink("» Situações", "Index", "Situacao")</li>
+                            <li>@Html.ActionLink("» Enriquecimento", "Index", "Enriquecimento")</li>
+                        </ul>
+                    </li>
+                }
+
+                @if (acessos.Where(a => a.Menu.Equals(2)).FirstOrDefault() != null)
+                {
+                    <li>
+                        <a href="#">» Configurações</a>
+                        <ul>
+                            <li>@Html.ActionLink("» Acesso", "IndexAcesso", "Configuracao")</li>
+                            <li>@Html.ActionLink("» Configurações", "Index", "Configuracao")</li>
+                        </ul>
+                    </li>
+                }
+
+                @if (acessos.Where(a => a.Menu.Equals(3)).FirstOrDefault() != null)
+                {
+                    <li>
+                        <a href="#">» Monitoramento</a>
+                        <ul>
+                            <li>@Html.ActionLink("» Bate-Papo", "Home", "Cliente")</li>
+                            <li><a href='@Url.Action("Index","Cliente",new { @pagina=1})'>» Clientes</a></li>
+                            <li>@Html.ActionLink("» Conversas", "Index", "Monitoria")</li>
+                        </ul>
+                    </li>
+                }
+
+                @if (acessos.Where(a => a.Menu.Equals(4)).FirstOrDefault() != null)
+                {
+                    <li>
+                        <a href="#">» Relatórios</a>
+                        <ul>
+                            <li>@Html.ActionLink("» Clientes x Situação", "RelatorioSituacao", "Relatorios")</li>
+                            <li>@Html.ActionLink("» Clientes x Acionamento", "RelatorioAcionamento", "Relatorios")</li>
+                            <li>@Html.ActionLink("» Dashboard", "Index", "Dashboard")</li>
+                        </ul>
+                    </li>
+                }
+            </ul>
+        </nav>
+    </div>
+
+    <div id="content">
+        @RenderBody()
+    </div>
+
+    <div id="div_mensagem_dialog" style="width:400px;min-height:150px;">
+
+    </div>
+
+</body>
+</html>

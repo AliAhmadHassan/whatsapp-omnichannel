@@ -1,0 +1,61 @@
+﻿@using MvcModalDialog
+@model IEnumerable<WWeb.UI.WebformMVC.Tb_Departamento>
+    @{
+        Layout = "~/Views/Shared/_Layout.cshtml";
+    }
+
+    <div id="tabela" class="grid">
+        <br />
+        <div id="nome-pagina">
+            » Configurações dos Acessos
+
+        </div>
+        <br /><br />
+        <table class="footable" data-page-size="10">
+            <caption>
+                &nbsp;&nbsp;&nbsp;&nbsp;Configurações Encontrados
+                @Ajax.ActionImageLink("../Content/img/btn-add3.png", "EditarAcesso", "Configuracao", null, "Liberar Acesso")
+            </caption>
+
+            <thead>
+                <tr>
+                    <th style="width:50px;">
+                        Id
+                    </th>
+                    <th>
+                        Descrição
+                    </th>
+                    <th>
+
+                    </th>
+                </tr>
+            </thead>
+
+            <tbody>
+                @foreach (WWeb.UI.WebformMVC.Tb_Departamento item in Model)
+                {
+                    <tr>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.Dep_ID)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.Dep_Nome)
+                        </td>
+
+                        <td style="width:50px; text-align:center;">
+                            @Ajax.ActionImageLink("../Content/img/btn-editar2.png", "VisualizarAcesso", "Configuracao", new { @dep_id = item.Dep_ID, @dep_nome = item.Dep_Nome }, "Visualizar Acessos Liberados")
+                        </td>
+                    </tr>
+                }
+            </tbody>
+
+            <tfoot class="hide-if-no-paging" style="text-align:center">
+                <tr>
+                    <td colspan="3" style="height:30px; text-align:center; background-color:#cccccc; color:#444444; line-height:30px;">
+                        Registro(s) Encontrado(s): @Model.Count().ToString("0000")
+                        <div class="pagination pagination-centered"></div>
+                    </td>
+                </tr>
+            </tfoot>
+        </table>
+    </div>

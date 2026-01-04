@@ -1,0 +1,846 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="3.0" xmlns:edmx="http://schemas.microsoft.com/ado/2009/11/edmx">
+  <!-- EF Runtime content -->
+  <edmx:Runtime>
+    <!-- SSDL content -->
+    <edmx:StorageModels>
+    <Schema Namespace="WWebModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2008" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+        <EntityType Name="Acesso">
+          <Key>
+            <PropertyRef Name="Departamento" />
+            <PropertyRef Name="Menu" />
+          </Key>
+          <Property Name="Departamento" Type="int" Nullable="false" />
+          <Property Name="Menu" Type="int" Nullable="false" />
+        </EntityType>
+        <EntityType Name="Agenda">
+          <Key>
+            <PropertyRef Name="AgendaId" />
+          </Key>
+          <Property Name="AgendaId" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="UsuarioId" Type="int" />
+          <Property Name="Data" Type="datetime" />
+          <Property Name="Anotacao" Type="varchar(max)" />
+        </EntityType>
+        <EntityType Name="Chavewhatsapp">
+          <Key>
+            <PropertyRef Name="TelefoneOrcozol" />
+          </Key>
+          <Property Name="TelefoneOrcozol" Type="varchar" MaxLength="20" Nullable="false" />
+          <Property Name="ChaveWhatsApp" Type="varchar" MaxLength="50" />
+          <Property Name="MaquinaVirtual" Type="varchar" MaxLength="20" />
+          <Property Name="IpMaquinaVirtual" Type="varchar" MaxLength="20" />
+          <Property Name="Carteira" Type="varchar" MaxLength="50" />
+          <Property Name="StatusRoboEnvio" Type="smallint" />
+          <Property Name="StatusRoboLeitura" Type="smallint" />
+          <Property Name="DataHoraStatusEnvio" Type="datetime" />
+          <Property Name="DataHoraStatusLeitura" Type="datetime" />
+        </EntityType>
+        <EntityType Name="Cliente">
+          <Key>
+            <PropertyRef Name="TelefoneCliente" />
+          </Key>
+          <Property Name="TelefoneCliente" Type="varchar" MaxLength="20" Nullable="false" />
+          <Property Name="Situacao" Type="varchar" MaxLength="20" />
+          <Property Name="UrlImagem" Type="varbinary(max)" />
+          <Property Name="DataHoraRegistro" Type="datetime" />
+          <Property Name="NomeCliente" Type="varchar" MaxLength="250" />
+          <Property Name="DataVisualizacao" Type="datetime" />
+          <Property Name="Cpf" Type="varchar" MaxLength="20" />
+          <Property Name="Status" Type="int" />
+          <Property Name="Pendente" Type="bit" />
+        </EntityType>
+        <EntityType Name="Configuracao">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="Descricao" Type="varchar" MaxLength="250" />
+          <Property Name="Valor" Type="varchar" MaxLength="250" />
+          <Property Name="Bloqueada" Type="bit" />
+        </EntityType>
+        <EntityType Name="Mensagem">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="TelefoneCliente" Type="varchar" MaxLength="20" />
+          <Property Name="DataMensagem" Type="datetime" />
+          <Property Name="DataInclusao" Type="datetime" />
+          <Property Name="Tipo" Type="smallint" />
+          <Property Name="Mensagem" Type="varchar(max)" />
+          <Property Name="Enviada" Type="bit" />
+          <Property Name="Sequencial" Type="varchar" MaxLength="50" />
+          <Property Name="Usuario" Type="int" />
+        </EntityType>
+        <EntityType Name="MensagemPredefinida">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="Mensagem" Type="varchar(max)" />
+          <Property Name="Bloqueada" Type="bit" />
+        </EntityType>
+        <EntityType Name="Situacao">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="Descricao" Type="varchar" MaxLength="150" />
+          <Property Name="Bloqueado" Type="bit" />
+        </EntityType>
+        <EntityType Name="Telefones">
+          <Key>
+            <PropertyRef Name="TelefoneCliente" />
+            <PropertyRef Name="TelefoneOrcozol" />
+          </Key>
+          <Property Name="TelefoneCliente" Type="varchar" MaxLength="20" Nullable="false" />
+          <Property Name="TelefoneOrcozol" Type="varchar" MaxLength="20" Nullable="false" />
+        </EntityType>
+        <Association Name="FK_Cliente_Situacao">
+          <End Role="Situacao" Type="Self.Situacao" Multiplicity="0..1" />
+          <End Role="Cliente" Type="Self.Cliente" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Situacao">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="Cliente">
+              <PropertyRef Name="Status" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Mensagem_Cliente">
+          <End Role="Cliente" Type="Self.Cliente" Multiplicity="0..1" />
+          <End Role="Mensagem" Type="Self.Mensagem" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Cliente">
+              <PropertyRef Name="TelefoneCliente" />
+            </Principal>
+            <Dependent Role="Mensagem">
+              <PropertyRef Name="TelefoneCliente" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Telefones_Cliente">
+          <End Role="Cliente" Type="Self.Cliente" Multiplicity="1" />
+          <End Role="Telefones" Type="Self.Telefones" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Cliente">
+              <PropertyRef Name="TelefoneCliente" />
+            </Principal>
+            <Dependent Role="Telefones">
+              <PropertyRef Name="TelefoneCliente" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Function Name="SPIGravarMensagem" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+          <Parameter Name="TelefoneCliente" Type="varchar" Mode="In" />
+          <Parameter Name="DataMensagem" Type="datetime" Mode="In" />
+          <Parameter Name="DataInclusao" Type="datetime" Mode="In" />
+          <Parameter Name="Tipo" Type="smallint" Mode="In" />
+          <Parameter Name="Mensagem" Type="varchar(max)" Mode="In" />
+          <Parameter Name="Enviada" Type="bit" Mode="In" />
+          <Parameter Name="Sequencial" Type="varchar" Mode="In" />
+        </Function>
+        <Function Name="SPSCliente" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+          <Parameter Name="Parametro" Type="int" Mode="In" />
+        </Function>
+        <Function Name="SPSClienteComStatus" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+          <Parameter Name="Parametro" Type="int" Mode="In" />
+        </Function>
+        <Function Name="SPSClienteOnline" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+          <Parameter Name="Qtd" Type="int" Mode="In" />
+        </Function>
+        <Function Name="SPSClienteOnLinePeloUsuario" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+          <Parameter Name="Usuario" Type="int" Mode="In" />
+          <Parameter Name="TelefoneCliente" Type="varchar" Mode="In" />
+        </Function>
+        <Function Name="SPSClientePeloNumeroOrcozol" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+          <Parameter Name="TelefoneOrcozol" Type="varchar" Mode="In" />
+        </Function>
+        <Function Name="SPSClientePeloTelefone" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+          <Parameter Name="TelefoneCliente" Type="varchar" Mode="In" />
+        </Function>
+        <Function Name="SPSClientePorData" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+          <Parameter Name="Inicio" Type="datetime" Mode="In" />
+          <Parameter Name="Fim" Type="datetime" Mode="In" />
+        </Function>
+        <Function Name="SPSEnviarMensagemNumeroOrcozol" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+          <Parameter Name="TelefoneOrcozol" Type="varchar" Mode="In" />
+        </Function>
+        <Function Name="SPSMensagemPeloCliente" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+          <Parameter Name="TelefoneCliente" Type="varchar" Mode="In" />
+        </Function>
+        <Function Name="SPSMensagemPeriodo" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+          <Parameter Name="Inicio" Type="datetime" Mode="In" />
+          <Parameter Name="Fim" Type="datetime" Mode="In" />
+        </Function>
+        <Function Name="SPSMensagemUsuarioPeriodo" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+          <Parameter Name="Inicio" Type="datetime" Mode="In" />
+          <Parameter Name="Fim" Type="datetime" Mode="In" />
+        </Function>
+        <Function Name="SPSQtdClienteTelefone" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+          <Parameter Name="TelefoneOrcozol" Type="varchar" Mode="In" />
+        </Function>
+        <Function Name="SPSTelefonePeloCliente" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+          <Parameter Name="TelefoneCliente" Type="varchar" Mode="In" />
+        </Function>
+        <Function Name="SPSTelefonePeloNumeroOrcozol" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+          <Parameter Name="TelefoneOrcozol" Type="varchar" Mode="In" />
+        </Function>
+        <Function Name="SPUClienteVisualizacao" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+          <Parameter Name="TelefoneCliente" Type="varchar" Mode="In" />
+        </Function>
+        <Function Name="SPUMensagemEnviada" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+          <Parameter Name="Id" Type="int" Mode="In" />
+        </Function>
+        <Function Name="SPUMensagensVisualizadas" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+          <Parameter Name="TelefoneCliente" Type="varchar" Mode="In" />
+        </Function>
+        <EntityContainer Name="WWebModelStoreContainer">
+          <EntitySet Name="Acesso" EntityType="Self.Acesso" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Agenda" EntityType="Self.Agenda" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Chavewhatsapp" EntityType="Self.Chavewhatsapp" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Cliente" EntityType="Self.Cliente" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Configuracao" EntityType="Self.Configuracao" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Mensagem" EntityType="Self.Mensagem" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="MensagemPredefinida" EntityType="Self.MensagemPredefinida" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Situacao" EntityType="Self.Situacao" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Telefones" EntityType="Self.Telefones" Schema="dbo" store:Type="Tables" />
+          <AssociationSet Name="FK_Cliente_Situacao" Association="Self.FK_Cliente_Situacao">
+            <End Role="Situacao" EntitySet="Situacao" />
+            <End Role="Cliente" EntitySet="Cliente" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Mensagem_Cliente" Association="Self.FK_Mensagem_Cliente">
+            <End Role="Cliente" EntitySet="Cliente" />
+            <End Role="Mensagem" EntitySet="Mensagem" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Telefones_Cliente" Association="Self.FK_Telefones_Cliente">
+            <End Role="Cliente" EntitySet="Cliente" />
+            <End Role="Telefones" EntitySet="Telefones" />
+          </AssociationSet>
+        </EntityContainer>
+      </Schema></edmx:StorageModels>
+    <!-- CSDL content -->
+    <edmx:ConceptualModels>
+      <Schema Namespace="WWebModel" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
+        <EntityType Name="Mensagem">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="TelefoneCliente" Type="String" MaxLength="20" FixedLength="false" Unicode="false" />
+          <Property Name="DataMensagem" Type="DateTime" Precision="3" />
+          <Property Name="DataInclusao" Type="DateTime" Precision="3" />
+          <Property Name="Tipo" Type="Int16" />
+          <Property Name="Mensagem1" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
+          <Property Name="Enviada" Type="Boolean" />
+          <Property Name="Sequencial" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <NavigationProperty Name="Cliente" Relationship="WWebModel.FK_Mensagem_Cliente" FromRole="Mensagem" ToRole="Cliente" />
+          <Property Name="Usuario" Type="Int32" />
+        </EntityType>
+        <EntityType Name="MensagemPredefinida">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Mensagem" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
+          <Property Name="Bloqueada" Type="Boolean" />
+        </EntityType>
+        <EntityType Name="Telefones">
+          <Key>
+            <PropertyRef Name="TelefoneCliente" />
+            <PropertyRef Name="TelefoneOrcozol" />
+          </Key>
+          <Property Name="TelefoneCliente" Type="String" MaxLength="20" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="TelefoneOrcozol" Type="String" MaxLength="20" FixedLength="false" Unicode="false" Nullable="false" />
+          <NavigationProperty Name="Cliente" Relationship="WWebModel.FK_Telefones_Cliente" FromRole="Telefones" ToRole="Cliente" />
+        </EntityType>
+        <EntityContainer Name="WWebEntities" annotation:LazyLoadingEnabled="true">
+          <EntitySet Name="Mensagem" EntityType="Self.Mensagem" />
+          <EntitySet Name="MensagemPredefinida" EntityType="Self.MensagemPredefinida" />
+          <EntitySet Name="Telefones" EntityType="Self.Telefones" />
+          <FunctionImport Name="SPIGravarMensagem">
+            <Parameter Name="TelefoneCliente" Mode="In" Type="String" />
+            <Parameter Name="DataMensagem" Mode="In" Type="DateTime" />
+            <Parameter Name="DataInclusao" Mode="In" Type="DateTime" />
+            <Parameter Name="Tipo" Mode="In" Type="Int16" />
+            <Parameter Name="Mensagem" Mode="In" Type="String" />
+            <Parameter Name="Enviada" Mode="In" Type="Boolean" />
+            <Parameter Name="Sequencial" Mode="In" Type="String" />
+          </FunctionImport>
+          <FunctionImport Name="SPSCliente" ReturnType="Collection(WWebModel.SPSCliente_Result)">
+          <Parameter Name="Parametro" Mode="In" Type="Int32" />
+          </FunctionImport>
+          <FunctionImport Name="SPSClienteOnline" ReturnType="Collection(WWebModel.SPSClienteOnline_Result)">
+          <Parameter Name="Qtd" Mode="In" Type="Int32" />
+          </FunctionImport>
+          <FunctionImport Name="SPSClientePeloNumeroOrcozol" ReturnType="Collection(WWebModel.SPSClientePeloNumeroOrcozol_Result)">
+          <Parameter Name="TelefoneOrcozol" Mode="In" Type="String" />
+          </FunctionImport>
+          <FunctionImport Name="SPSClientePeloTelefone" ReturnType="Collection(WWebModel.SPSClientePeloTelefone_Result)">
+          <Parameter Name="TelefoneCliente" Mode="In" Type="String" />
+          </FunctionImport>
+          <FunctionImport Name="SPSEnviarMensagemNumeroOrcozol" ReturnType="Collection(WWebModel.SPSEnviarMensagemNumeroOrcozol_Result)">
+          <Parameter Name="TelefoneOrcozol" Mode="In" Type="String" />
+          </FunctionImport>
+          <FunctionImport Name="SPSMensagemPeloCliente" ReturnType="Collection(WWebModel.SPSMensagemPeloCliente_Result)">
+          <Parameter Name="TelefoneCliente" Mode="In" Type="String" />
+          </FunctionImport>
+          <FunctionImport Name="SPSTelefonePeloCliente" ReturnType="Collection(WWebModel.SPSTelefonePeloCliente_Result)">
+          <Parameter Name="TelefoneCliente" Mode="In" Type="String" />
+          </FunctionImport>
+          <FunctionImport Name="SPSTelefonePeloNumeroOrcozol" ReturnType="Collection(WWebModel.SPSTelefonePeloNumeroOrcozol_Result)">
+          <Parameter Name="TelefoneOrcozol" Mode="In" Type="String" />
+          </FunctionImport>
+          <FunctionImport Name="SPUClienteVisualizacao">
+          <Parameter Name="TelefoneCliente" Mode="In" Type="String" />
+          </FunctionImport>
+          <FunctionImport Name="SPUMensagemEnviada">
+          <Parameter Name="Id" Mode="In" Type="Int32" />
+          </FunctionImport>
+          <FunctionImport Name="SPUMensagensVisualizadas" ReturnType="Collection(WWebModel.SPUMensagensVisualizadas_Result)">
+          <Parameter Name="TelefoneCliente" Mode="In" Type="String" />
+          </FunctionImport>
+          <EntitySet Name="Configuracao" EntityType="WWebModel.Configuracao" />
+          <EntitySet Name="Acesso" EntityType="WWebModel.Acesso" />
+          <EntitySet Name="Cliente" EntityType="WWebModel.Cliente" />
+          <AssociationSet Name="FK_Mensagem_Cliente" Association="WWebModel.FK_Mensagem_Cliente">
+            <End Role="Cliente" EntitySet="Cliente" />
+            <End Role="Mensagem" EntitySet="Mensagem" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Telefones_Cliente" Association="WWebModel.FK_Telefones_Cliente">
+            <End Role="Cliente" EntitySet="Cliente" />
+            <End Role="Telefones" EntitySet="Telefones" />
+          </AssociationSet>
+          <EntitySet Name="Chavewhatsapp" EntityType="WWebModel.Chavewhatsapp" />
+          <EntitySet Name="Situacao" EntityType="WWebModel.Situacao" />
+          <AssociationSet Name="FK_Cliente_Situacao" Association="WWebModel.FK_Cliente_Situacao">
+            <End Role="Situacao" EntitySet="Situacao" />
+            <End Role="Cliente" EntitySet="Cliente" />
+          </AssociationSet>
+          <FunctionImport Name="SPSClienteComStatus" ReturnType="Collection(WWebModel.SPSClienteComStatus_Result)">
+          <Parameter Name="Parametro" Mode="In" Type="Int32" />
+          </FunctionImport>
+          <FunctionImport Name="SPSClienteOnLinePeloUsuario" ReturnType="Collection(WWebModel.SPSClienteOnLinePeloUsuario_Result)">
+            <Parameter Name="Usuario" Mode="In" Type="Int32" />
+            <Parameter Name="TelefoneCliente" Mode="In" Type="String" />
+          </FunctionImport>
+          <FunctionImport Name="SPSClientePorData" ReturnType="Collection(WWebModel.SPSClientePorData_Result)">
+            <Parameter Name="Inicio" Mode="In" Type="DateTime" />
+            <Parameter Name="Fim" Mode="In" Type="DateTime" />
+          </FunctionImport>
+          <FunctionImport Name="SPSMensagemPeriodo" ReturnType="Collection(WWebModel.SPSMensagemPeriodo_Result)">
+            <Parameter Name="Inicio" Mode="In" Type="DateTime" />
+            <Parameter Name="Fim" Mode="In" Type="DateTime" />
+          </FunctionImport>
+          <FunctionImport Name="SPSMensagemUsuarioPeriodo" ReturnType="Collection(WWebModel.SPSMensagemUsuarioPeriodo_Result)">
+            <Parameter Name="Inicio" Mode="In" Type="DateTime" />
+            <Parameter Name="Fim" Mode="In" Type="DateTime" />
+          </FunctionImport>
+          <FunctionImport Name="SPSQtdClienteTelefone" ReturnType="Collection(Int32)">
+          <Parameter Name="TelefoneOrcozol" Mode="In" Type="String" />
+          </FunctionImport>
+          <EntitySet Name="Agenda" EntityType="WWebModel.Agenda" />
+        </EntityContainer>
+        <ComplexType Name="SPSCliente_Result">
+          <Property Type="String" Name="TelefoneCliente" Nullable="false" MaxLength="20" />
+          <Property Type="String" Name="Situacao" Nullable="true" MaxLength="20" />
+          <Property Type="String" Name="UrlImagem" Nullable="true" />
+          <Property Type="DateTime" Name="DataHoraRegistro" Nullable="true" Precision="23" />
+          <Property Type="String" Name="NomeCliente" Nullable="true" MaxLength="250" />
+          <Property Type="DateTime" Name="DataVisualizacao" Nullable="true" Precision="23" />
+          <Property Type="String" Name="Cpf" Nullable="true" MaxLength="20" />
+        </ComplexType>
+        <ComplexType Name="SPSClienteOnline_Result">
+          <Property Type="String" Name="TelefoneCliente" Nullable="false" MaxLength="20" />
+          <Property Type="String" Name="Situacao" Nullable="true" MaxLength="20" />
+          <Property Type="String" Name="UrlImagem" Nullable="true" />
+          <Property Type="DateTime" Name="DataHoraRegistro" Nullable="true" Precision="23" />
+          <Property Type="String" Name="NomeCliente" Nullable="true" MaxLength="250" />
+          <Property Type="DateTime" Name="DataVisualizacao" Nullable="true" Precision="23" />
+          <Property Type="String" Name="Cpf" Nullable="true" MaxLength="20" />
+        </ComplexType>
+        <ComplexType Name="SPSClientePeloNumeroOrcozol_Result">
+          <Property Type="String" Name="TelefoneCliente" Nullable="false" MaxLength="20" />
+          <Property Type="String" Name="Situacao" Nullable="true" MaxLength="20" />
+          <Property Type="String" Name="UrlImagem" Nullable="true" />
+          <Property Type="DateTime" Name="DataHoraRegistro" Nullable="true" Precision="23" />
+          <Property Type="String" Name="NomeCliente" Nullable="true" MaxLength="250" />
+        </ComplexType>
+        <ComplexType Name="SPSClientePeloTelefone_Result">
+          <Property Type="String" Name="TelefoneCliente" Nullable="false" MaxLength="20" />
+          <Property Type="String" Name="Situacao" Nullable="true" MaxLength="20" />
+          <Property Type="String" Name="UrlImagem" Nullable="true" />
+          <Property Type="DateTime" Name="DataHoraRegistro" Nullable="true" Precision="23" />
+          <Property Type="String" Name="NomeCliente" Nullable="true" MaxLength="250" />
+          <Property Type="DateTime" Name="DataVisualizacao" Nullable="true" Precision="23" />
+          <Property Type="String" Name="Cpf" Nullable="true" MaxLength="20" />
+        </ComplexType>
+        <ComplexType Name="SPSEnviarMensagemNumeroOrcozol_Result">
+          <Property Type="Int32" Name="Id" Nullable="false" />
+          <Property Type="String" Name="TelefoneCliente" Nullable="true" MaxLength="20" />
+          <Property Type="DateTime" Name="DataMensagem" Nullable="true" Precision="23" />
+          <Property Type="DateTime" Name="DataInclusao" Nullable="true" Precision="23" />
+          <Property Type="Int16" Name="Tipo" Nullable="true" />
+          <Property Type="String" Name="Mensagem" Nullable="true" />
+          <Property Type="Boolean" Name="Enviada" Nullable="true" />
+          <Property Type="String" Name="NomeCliente" Nullable="true" MaxLength="250" />
+        </ComplexType>
+        <ComplexType Name="SPSMensagemPeloCliente_Result">
+          <Property Type="Int32" Name="Id" Nullable="false" />
+          <Property Type="String" Name="TelefoneCliente" Nullable="true" MaxLength="20" />
+          <Property Type="DateTime" Name="DataMensagem" Nullable="true" Precision="23" />
+          <Property Type="DateTime" Name="DataInclusao" Nullable="true" Precision="23" />
+          <Property Type="Int16" Name="Tipo" Nullable="true" />
+          <Property Type="String" Name="Mensagem" Nullable="true" />
+          <Property Type="Boolean" Name="Enviada" Nullable="true" />
+          <Property Type="String" Name="Sequencial" Nullable="true" MaxLength="50" />
+        </ComplexType>
+        <ComplexType Name="SPSTelefonePeloCliente_Result">
+          <Property Type="String" Name="TelefoneOrcozol" Nullable="false" MaxLength="20" />
+          <Property Type="String" Name="TelefoneCliente" Nullable="false" MaxLength="20" />
+        </ComplexType>
+        <ComplexType Name="SPSTelefonePeloNumeroOrcozol_Result">
+          <Property Type="String" Name="TelefoneOrcozol" Nullable="false" MaxLength="20" />
+          <Property Type="String" Name="TelefoneCliente" Nullable="false" MaxLength="20" />
+        </ComplexType>
+        <ComplexType Name="SPUMensagensVisualizadas_Result">
+          <Property Type="Int32" Name="Id" Nullable="false" />
+          <Property Type="String" Name="TelefoneCliente" Nullable="true" MaxLength="20" />
+          <Property Type="DateTime" Name="DataMensagem" Nullable="true" Precision="23" />
+          <Property Type="DateTime" Name="DataInclusao" Nullable="true" Precision="23" />
+          <Property Type="Int16" Name="Tipo" Nullable="true" />
+          <Property Type="String" Name="Mensagem" Nullable="true" />
+          <Property Type="Boolean" Name="Enviada" Nullable="true" />
+          <Property Type="String" Name="Sequencial" Nullable="true" MaxLength="50" />
+        </ComplexType>
+        <EntityType Name="Configuracao">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Valor" Type="String" MaxLength="250" FixedLength="false" Unicode="false" />
+          <Property Name="Bloqueada" Type="Boolean" />
+          <Property Name="Descricao" Type="String" MaxLength="250" FixedLength="false" Unicode="false" />
+        </EntityType>
+        <EntityType Name="Acesso">
+          <Key>
+            <PropertyRef Name="Departamento" />
+            <PropertyRef Name="Menu" />
+          </Key>
+          <Property Name="Departamento" Type="Int32" Nullable="false" />
+          <Property Name="Menu" Type="Int32" Nullable="false" />
+        </EntityType>
+        <EntityType Name="Cliente">
+          <Key>
+            <PropertyRef Name="TelefoneCliente" />
+          </Key>
+          <Property Name="TelefoneCliente" Type="String" Nullable="false" MaxLength="20" FixedLength="false" Unicode="false" />
+          <Property Name="Situacao" Type="String" MaxLength="20" FixedLength="false" Unicode="false" />
+          <Property Name="UrlImagem" Type="Binary" MaxLength="Max" FixedLength="false" />
+          <Property Name="DataHoraRegistro" Type="DateTime" Precision="3" />
+          <Property Name="NomeCliente" Type="String" MaxLength="250" FixedLength="false" Unicode="false" />
+          <Property Name="DataVisualizacao" Type="DateTime" Precision="3" />
+          <Property Name="Cpf" Type="String" MaxLength="20" FixedLength="false" Unicode="false" />
+          <NavigationProperty Name="Mensagem" Relationship="WWebModel.FK_Mensagem_Cliente" FromRole="Cliente" ToRole="Mensagem" />
+          <NavigationProperty Name="Telefones" Relationship="WWebModel.FK_Telefones_Cliente" FromRole="Cliente" ToRole="Telefones" />
+          <Property Name="Status" Type="Int32" />
+          <NavigationProperty Name="Situacao1" Relationship="WWebModel.FK_Cliente_Situacao" FromRole="Cliente" ToRole="Situacao" />
+          <Property Name="Pendente" Type="Boolean" />
+        </EntityType>
+        <Association Name="FK_Mensagem_Cliente">
+          <End Type="WWebModel.Cliente" Role="Cliente" Multiplicity="0..1" />
+          <End Type="WWebModel.Mensagem" Role="Mensagem" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Cliente">
+              <PropertyRef Name="TelefoneCliente" />
+            </Principal>
+            <Dependent Role="Mensagem">
+              <PropertyRef Name="TelefoneCliente" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Telefones_Cliente">
+          <End Type="WWebModel.Cliente" Role="Cliente" Multiplicity="1" />
+          <End Type="WWebModel.Telefones" Role="Telefones" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Cliente">
+              <PropertyRef Name="TelefoneCliente" />
+            </Principal>
+            <Dependent Role="Telefones">
+              <PropertyRef Name="TelefoneCliente" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <EntityType Name="Chavewhatsapp">
+          <Key>
+            <PropertyRef Name="TelefoneOrcozol" />
+          </Key>
+          <Property Name="TelefoneOrcozol" Type="String" Nullable="false" MaxLength="20" FixedLength="false" Unicode="false" />
+          <Property Name="ChaveWhatsApp1" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="MaquinaVirtual" Type="String" MaxLength="20" FixedLength="false" Unicode="false" />
+          <Property Name="IpMaquinaVirtual" Type="String" MaxLength="20" FixedLength="false" Unicode="false" />
+          <Property Name="Carteira" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="StatusRoboEnvio" Type="Int16" />
+          <Property Name="StatusRoboLeitura" Type="Int16" />
+          <Property Name="DataHoraStatusEnvio" Type="DateTime" Precision="3" />
+          <Property Name="DataHoraStatusLeitura" Type="DateTime" Precision="3" />
+        </EntityType>
+        <EntityType Name="Situacao">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Descricao" Type="String" MaxLength="150" FixedLength="false" Unicode="false" />
+          <Property Name="Bloqueado" Type="Boolean" />
+          <NavigationProperty Name="Cliente" Relationship="WWebModel.FK_Cliente_Situacao" FromRole="Situacao" ToRole="Cliente" />
+        </EntityType>
+        <Association Name="FK_Cliente_Situacao">
+          <End Type="WWebModel.Situacao" Role="Situacao" Multiplicity="0..1" />
+          <End Type="WWebModel.Cliente" Role="Cliente" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Situacao">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="Cliente">
+              <PropertyRef Name="Status" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <ComplexType Name="SPSClienteComStatus_Result">
+          <Property Type="String" Name="TelefoneCliente" Nullable="false" MaxLength="20" />
+          <Property Type="String" Name="Situacao" Nullable="true" MaxLength="20" />
+          <Property Type="Binary" Name="UrlImagem" Nullable="true" />
+          <Property Type="DateTime" Name="DataHoraRegistro" Nullable="true" Precision="23" />
+          <Property Type="String" Name="NomeCliente" Nullable="true" MaxLength="250" />
+          <Property Type="DateTime" Name="DataVisualizacao" Nullable="true" Precision="23" />
+          <Property Type="String" Name="Cpf" Nullable="true" MaxLength="20" />
+          <Property Type="Int32" Name="Status" Nullable="true" />
+          <Property Type="String" Name="Descricao" Nullable="true" MaxLength="150" />
+        </ComplexType>
+        <ComplexType Name="SPSClienteOnLinePeloUsuario_Result">
+          <Property Type="String" Name="TelefoneCliente" Nullable="false" MaxLength="20" />
+          <Property Type="String" Name="Situacao" Nullable="true" MaxLength="20" />
+          <Property Type="Binary" Name="UrlImagem" Nullable="true" />
+          <Property Type="DateTime" Name="DataHoraRegistro" Nullable="true" Precision="23" />
+          <Property Type="String" Name="NomeCliente" Nullable="true" MaxLength="250" />
+          <Property Type="DateTime" Name="DataVisualizacao" Nullable="true" Precision="23" />
+          <Property Type="String" Name="Cpf" Nullable="true" MaxLength="20" />
+          <Property Type="Int32" Name="Status" Nullable="true" />
+        </ComplexType>
+        <ComplexType Name="SPSClientePorData_Result">
+          <Property Type="String" Name="Data" Nullable="true" MaxLength="10" />
+          <Property Type="Int32" Name="Quantidade" Nullable="true" />
+        </ComplexType>
+        <ComplexType Name="SPSMensagemPeriodo_Result">
+          <Property Type="Int32" Name="Total" Nullable="true" />
+          <Property Type="String" Name="Data" Nullable="true" MaxLength="10" />
+        </ComplexType>
+        <ComplexType Name="SPSMensagemUsuarioPeriodo_Result">
+          <Property Type="Int32" Name="Total" Nullable="true" />
+          <Property Type="Int32" Name="Usuario" Nullable="true" />
+        </ComplexType>
+        <EntityType Name="Agenda">
+          <Key>
+            <PropertyRef Name="AgendaId" />
+          </Key>
+          <Property Name="AgendaId" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="UsuarioId" Type="Int32" />
+          <Property Name="Data" Type="DateTime" Precision="3" />
+          <Property Name="Anotacao" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
+        </EntityType>
+      </Schema>
+    </edmx:ConceptualModels>
+    <!-- C-S mapping content -->
+    <edmx:Mappings>
+      <Mapping Space="C-S" xmlns="http://schemas.microsoft.com/ado/2009/11/mapping/cs">
+        <EntityContainerMapping StorageEntityContainer="WWebModelStoreContainer" CdmEntityContainer="WWebEntities">
+          <EntitySetMapping Name="Mensagem">
+            <EntityTypeMapping TypeName="WWebModel.Mensagem">
+              <MappingFragment StoreEntitySet="Mensagem">
+                <ScalarProperty Name="Usuario" ColumnName="Usuario" />
+                <ScalarProperty Name="Id" ColumnName="Id" />
+                <ScalarProperty Name="TelefoneCliente" ColumnName="TelefoneCliente" />
+                <ScalarProperty Name="DataMensagem" ColumnName="DataMensagem" />
+                <ScalarProperty Name="DataInclusao" ColumnName="DataInclusao" />
+                <ScalarProperty Name="Tipo" ColumnName="Tipo" />
+                <ScalarProperty Name="Mensagem1" ColumnName="Mensagem" />
+                <ScalarProperty Name="Enviada" ColumnName="Enviada" />
+                <ScalarProperty Name="Sequencial" ColumnName="Sequencial" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="MensagemPredefinida">
+            <EntityTypeMapping TypeName="WWebModel.MensagemPredefinida">
+              <MappingFragment StoreEntitySet="MensagemPredefinida">
+                <ScalarProperty Name="Id" ColumnName="Id" />
+                <ScalarProperty Name="Mensagem" ColumnName="Mensagem" />
+                <ScalarProperty Name="Bloqueada" ColumnName="Bloqueada" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Telefones">
+            <EntityTypeMapping TypeName="WWebModel.Telefones">
+              <MappingFragment StoreEntitySet="Telefones">
+                <ScalarProperty Name="TelefoneCliente" ColumnName="TelefoneCliente" />
+                <ScalarProperty Name="TelefoneOrcozol" ColumnName="TelefoneOrcozol" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <FunctionImportMapping FunctionImportName="SPIGravarMensagem" FunctionName="WWebModel.Store.SPIGravarMensagem" />
+          <FunctionImportMapping FunctionImportName="SPSCliente" FunctionName="WWebModel.Store.SPSCliente">
+            <ResultMapping>
+              <ComplexTypeMapping TypeName="WWebModel.SPSCliente_Result">
+                <ScalarProperty Name="TelefoneCliente" ColumnName="TelefoneCliente" />
+                <ScalarProperty Name="Situacao" ColumnName="Situacao" />
+                <ScalarProperty Name="UrlImagem" ColumnName="UrlImagem" />
+                <ScalarProperty Name="DataHoraRegistro" ColumnName="DataHoraRegistro" />
+                <ScalarProperty Name="NomeCliente" ColumnName="NomeCliente" />
+                <ScalarProperty Name="DataVisualizacao" ColumnName="DataVisualizacao" />
+                <ScalarProperty Name="Cpf" ColumnName="Cpf" />
+              </ComplexTypeMapping>
+            </ResultMapping>
+          </FunctionImportMapping>
+          <FunctionImportMapping FunctionImportName="SPSClienteOnline" FunctionName="WWebModel.Store.SPSClienteOnline">
+            <ResultMapping>
+              <ComplexTypeMapping TypeName="WWebModel.SPSClienteOnline_Result">
+                <ScalarProperty Name="TelefoneCliente" ColumnName="TelefoneCliente" />
+                <ScalarProperty Name="Situacao" ColumnName="Situacao" />
+                <ScalarProperty Name="UrlImagem" ColumnName="UrlImagem" />
+                <ScalarProperty Name="DataHoraRegistro" ColumnName="DataHoraRegistro" />
+                <ScalarProperty Name="NomeCliente" ColumnName="NomeCliente" />
+                <ScalarProperty Name="DataVisualizacao" ColumnName="DataVisualizacao" />
+                <ScalarProperty Name="Cpf" ColumnName="Cpf" />
+              </ComplexTypeMapping>
+            </ResultMapping>
+          </FunctionImportMapping>
+          <FunctionImportMapping FunctionImportName="SPSClientePeloNumeroOrcozol" FunctionName="WWebModel.Store.SPSClientePeloNumeroOrcozol">
+            <ResultMapping>
+              <ComplexTypeMapping TypeName="WWebModel.SPSClientePeloNumeroOrcozol_Result">
+                <ScalarProperty Name="TelefoneCliente" ColumnName="TelefoneCliente" />
+                <ScalarProperty Name="Situacao" ColumnName="Situacao" />
+                <ScalarProperty Name="UrlImagem" ColumnName="UrlImagem" />
+                <ScalarProperty Name="DataHoraRegistro" ColumnName="DataHoraRegistro" />
+                <ScalarProperty Name="NomeCliente" ColumnName="NomeCliente" />
+              </ComplexTypeMapping>
+            </ResultMapping>
+          </FunctionImportMapping>
+          <FunctionImportMapping FunctionImportName="SPSClientePeloTelefone" FunctionName="WWebModel.Store.SPSClientePeloTelefone">
+            <ResultMapping>
+              <ComplexTypeMapping TypeName="WWebModel.SPSClientePeloTelefone_Result">
+                <ScalarProperty Name="TelefoneCliente" ColumnName="TelefoneCliente" />
+                <ScalarProperty Name="Situacao" ColumnName="Situacao" />
+                <ScalarProperty Name="UrlImagem" ColumnName="UrlImagem" />
+                <ScalarProperty Name="DataHoraRegistro" ColumnName="DataHoraRegistro" />
+                <ScalarProperty Name="NomeCliente" ColumnName="NomeCliente" />
+                <ScalarProperty Name="DataVisualizacao" ColumnName="DataVisualizacao" />
+                <ScalarProperty Name="Cpf" ColumnName="Cpf" />
+              </ComplexTypeMapping>
+            </ResultMapping>
+          </FunctionImportMapping>
+          <FunctionImportMapping FunctionImportName="SPSEnviarMensagemNumeroOrcozol" FunctionName="WWebModel.Store.SPSEnviarMensagemNumeroOrcozol">
+            <ResultMapping>
+              <ComplexTypeMapping TypeName="WWebModel.SPSEnviarMensagemNumeroOrcozol_Result">
+                <ScalarProperty Name="Id" ColumnName="Id" />
+                <ScalarProperty Name="TelefoneCliente" ColumnName="TelefoneCliente" />
+                <ScalarProperty Name="DataMensagem" ColumnName="DataMensagem" />
+                <ScalarProperty Name="DataInclusao" ColumnName="DataInclusao" />
+                <ScalarProperty Name="Tipo" ColumnName="Tipo" />
+                <ScalarProperty Name="Mensagem" ColumnName="Mensagem" />
+                <ScalarProperty Name="Enviada" ColumnName="Enviada" />
+                <ScalarProperty Name="NomeCliente" ColumnName="NomeCliente" />
+              </ComplexTypeMapping>
+            </ResultMapping>
+          </FunctionImportMapping>
+          <FunctionImportMapping FunctionImportName="SPSMensagemPeloCliente" FunctionName="WWebModel.Store.SPSMensagemPeloCliente">
+            <ResultMapping>
+              <ComplexTypeMapping TypeName="WWebModel.SPSMensagemPeloCliente_Result">
+                <ScalarProperty Name="Id" ColumnName="Id" />
+                <ScalarProperty Name="TelefoneCliente" ColumnName="TelefoneCliente" />
+                <ScalarProperty Name="DataMensagem" ColumnName="DataMensagem" />
+                <ScalarProperty Name="DataInclusao" ColumnName="DataInclusao" />
+                <ScalarProperty Name="Tipo" ColumnName="Tipo" />
+                <ScalarProperty Name="Mensagem" ColumnName="Mensagem" />
+                <ScalarProperty Name="Enviada" ColumnName="Enviada" />
+                <ScalarProperty Name="Sequencial" ColumnName="Sequencial" />
+              </ComplexTypeMapping>
+            </ResultMapping>
+          </FunctionImportMapping>
+          <FunctionImportMapping FunctionImportName="SPSTelefonePeloCliente" FunctionName="WWebModel.Store.SPSTelefonePeloCliente">
+            <ResultMapping>
+              <ComplexTypeMapping TypeName="WWebModel.SPSTelefonePeloCliente_Result">
+                <ScalarProperty Name="TelefoneOrcozol" ColumnName="TelefoneOrcozol" />
+                <ScalarProperty Name="TelefoneCliente" ColumnName="TelefoneCliente" />
+              </ComplexTypeMapping>
+            </ResultMapping>
+          </FunctionImportMapping>
+          <FunctionImportMapping FunctionImportName="SPSTelefonePeloNumeroOrcozol" FunctionName="WWebModel.Store.SPSTelefonePeloNumeroOrcozol">
+            <ResultMapping>
+              <ComplexTypeMapping TypeName="WWebModel.SPSTelefonePeloNumeroOrcozol_Result">
+                <ScalarProperty Name="TelefoneOrcozol" ColumnName="TelefoneOrcozol" />
+                <ScalarProperty Name="TelefoneCliente" ColumnName="TelefoneCliente" />
+              </ComplexTypeMapping>
+            </ResultMapping>
+          </FunctionImportMapping>
+          <FunctionImportMapping FunctionImportName="SPUClienteVisualizacao" FunctionName="WWebModel.Store.SPUClienteVisualizacao" />
+          <FunctionImportMapping FunctionImportName="SPUMensagemEnviada" FunctionName="WWebModel.Store.SPUMensagemEnviada" />
+          <FunctionImportMapping FunctionImportName="SPUMensagensVisualizadas" FunctionName="WWebModel.Store.SPUMensagensVisualizadas">
+            <ResultMapping>
+              <ComplexTypeMapping TypeName="WWebModel.SPUMensagensVisualizadas_Result">
+                <ScalarProperty Name="Id" ColumnName="Id" />
+                <ScalarProperty Name="TelefoneCliente" ColumnName="TelefoneCliente" />
+                <ScalarProperty Name="DataMensagem" ColumnName="DataMensagem" />
+                <ScalarProperty Name="DataInclusao" ColumnName="DataInclusao" />
+                <ScalarProperty Name="Tipo" ColumnName="Tipo" />
+                <ScalarProperty Name="Mensagem" ColumnName="Mensagem" />
+                <ScalarProperty Name="Enviada" ColumnName="Enviada" />
+                <ScalarProperty Name="Sequencial" ColumnName="Sequencial" />
+              </ComplexTypeMapping>
+            </ResultMapping>
+          </FunctionImportMapping>
+          <EntitySetMapping Name="Configuracao">
+            <EntityTypeMapping TypeName="WWebModel.Configuracao">
+              <MappingFragment StoreEntitySet="Configuracao">
+                <ScalarProperty Name="Descricao" ColumnName="Descricao" />
+                <ScalarProperty Name="Bloqueada" ColumnName="Bloqueada" />
+                <ScalarProperty Name="Valor" ColumnName="Valor" />
+                <ScalarProperty Name="Id" ColumnName="Id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Acesso">
+            <EntityTypeMapping TypeName="WWebModel.Acesso">
+              <MappingFragment StoreEntitySet="Acesso">
+                <ScalarProperty Name="Menu" ColumnName="Menu" />
+                <ScalarProperty Name="Departamento" ColumnName="Departamento" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Cliente">
+            <EntityTypeMapping TypeName="WWebModel.Cliente">
+              <MappingFragment StoreEntitySet="Cliente">
+                <ScalarProperty Name="Pendente" ColumnName="Pendente" />
+                <ScalarProperty Name="Status" ColumnName="Status" />
+                <ScalarProperty Name="Cpf" ColumnName="Cpf" />
+                <ScalarProperty Name="DataVisualizacao" ColumnName="DataVisualizacao" />
+                <ScalarProperty Name="NomeCliente" ColumnName="NomeCliente" />
+                <ScalarProperty Name="DataHoraRegistro" ColumnName="DataHoraRegistro" />
+                <ScalarProperty Name="UrlImagem" ColumnName="UrlImagem" />
+                <ScalarProperty Name="Situacao" ColumnName="Situacao" />
+                <ScalarProperty Name="TelefoneCliente" ColumnName="TelefoneCliente" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Chavewhatsapp">
+            <EntityTypeMapping TypeName="WWebModel.Chavewhatsapp">
+              <MappingFragment StoreEntitySet="Chavewhatsapp">
+                <ScalarProperty Name="DataHoraStatusLeitura" ColumnName="DataHoraStatusLeitura" />
+                <ScalarProperty Name="DataHoraStatusEnvio" ColumnName="DataHoraStatusEnvio" />
+                <ScalarProperty Name="StatusRoboLeitura" ColumnName="StatusRoboLeitura" />
+                <ScalarProperty Name="StatusRoboEnvio" ColumnName="StatusRoboEnvio" />
+                <ScalarProperty Name="Carteira" ColumnName="Carteira" />
+                <ScalarProperty Name="IpMaquinaVirtual" ColumnName="IpMaquinaVirtual" />
+                <ScalarProperty Name="MaquinaVirtual" ColumnName="MaquinaVirtual" />
+                <ScalarProperty Name="ChaveWhatsApp1" ColumnName="ChaveWhatsApp" />
+                <ScalarProperty Name="TelefoneOrcozol" ColumnName="TelefoneOrcozol" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Situacao">
+            <EntityTypeMapping TypeName="WWebModel.Situacao">
+              <MappingFragment StoreEntitySet="Situacao">
+                <ScalarProperty Name="Bloqueado" ColumnName="Bloqueado" />
+                <ScalarProperty Name="Descricao" ColumnName="Descricao" />
+                <ScalarProperty Name="Id" ColumnName="Id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <FunctionImportMapping FunctionImportName="SPSClienteComStatus" FunctionName="WWebModel.Store.SPSClienteComStatus">
+            <ResultMapping>
+              <ComplexTypeMapping TypeName="WWebModel.SPSClienteComStatus_Result">
+                <ScalarProperty Name="TelefoneCliente" ColumnName="TelefoneCliente" />
+                <ScalarProperty Name="Situacao" ColumnName="Situacao" />
+                <ScalarProperty Name="UrlImagem" ColumnName="UrlImagem" />
+                <ScalarProperty Name="DataHoraRegistro" ColumnName="DataHoraRegistro" />
+                <ScalarProperty Name="NomeCliente" ColumnName="NomeCliente" />
+                <ScalarProperty Name="DataVisualizacao" ColumnName="DataVisualizacao" />
+                <ScalarProperty Name="Cpf" ColumnName="Cpf" />
+                <ScalarProperty Name="Status" ColumnName="Status" />
+                <ScalarProperty Name="Descricao" ColumnName="Descricao" />
+              </ComplexTypeMapping>
+            </ResultMapping>
+          </FunctionImportMapping>
+          <FunctionImportMapping FunctionImportName="SPSClienteOnLinePeloUsuario" FunctionName="WWebModel.Store.SPSClienteOnLinePeloUsuario">
+            <ResultMapping>
+              <ComplexTypeMapping TypeName="WWebModel.SPSClienteOnLinePeloUsuario_Result">
+                <ScalarProperty Name="TelefoneCliente" ColumnName="TelefoneCliente" />
+                <ScalarProperty Name="Situacao" ColumnName="Situacao" />
+                <ScalarProperty Name="UrlImagem" ColumnName="UrlImagem" />
+                <ScalarProperty Name="DataHoraRegistro" ColumnName="DataHoraRegistro" />
+                <ScalarProperty Name="NomeCliente" ColumnName="NomeCliente" />
+                <ScalarProperty Name="DataVisualizacao" ColumnName="DataVisualizacao" />
+                <ScalarProperty Name="Cpf" ColumnName="Cpf" />
+                <ScalarProperty Name="Status" ColumnName="Status" />
+              </ComplexTypeMapping>
+            </ResultMapping>
+          </FunctionImportMapping>
+          <FunctionImportMapping FunctionImportName="SPSClientePorData" FunctionName="WWebModel.Store.SPSClientePorData">
+            <ResultMapping>
+              <ComplexTypeMapping TypeName="WWebModel.SPSClientePorData_Result">
+                <ScalarProperty Name="Data" ColumnName="Data" />
+                <ScalarProperty Name="Quantidade" ColumnName="Quantidade" />
+              </ComplexTypeMapping>
+            </ResultMapping>
+          </FunctionImportMapping>
+          <FunctionImportMapping FunctionImportName="SPSMensagemPeriodo" FunctionName="WWebModel.Store.SPSMensagemPeriodo">
+            <ResultMapping>
+              <ComplexTypeMapping TypeName="WWebModel.SPSMensagemPeriodo_Result">
+                <ScalarProperty Name="Total" ColumnName="Total" />
+                <ScalarProperty Name="Data" ColumnName="Data" />
+              </ComplexTypeMapping>
+            </ResultMapping>
+          </FunctionImportMapping>
+          <FunctionImportMapping FunctionImportName="SPSMensagemUsuarioPeriodo" FunctionName="WWebModel.Store.SPSMensagemUsuarioPeriodo">
+            <ResultMapping>
+              <ComplexTypeMapping TypeName="WWebModel.SPSMensagemUsuarioPeriodo_Result">
+                <ScalarProperty Name="Total" ColumnName="Total" />
+                <ScalarProperty Name="Usuario" ColumnName="Usuario" />
+              </ComplexTypeMapping>
+            </ResultMapping>
+          </FunctionImportMapping>
+          <FunctionImportMapping FunctionImportName="SPSQtdClienteTelefone" FunctionName="WWebModel.Store.SPSQtdClienteTelefone" />
+          <EntitySetMapping Name="Agenda">
+            <EntityTypeMapping TypeName="WWebModel.Agenda">
+              <MappingFragment StoreEntitySet="Agenda">
+                <ScalarProperty Name="Anotacao" ColumnName="Anotacao" />
+                <ScalarProperty Name="Data" ColumnName="Data" />
+                <ScalarProperty Name="UsuarioId" ColumnName="UsuarioId" />
+                <ScalarProperty Name="AgendaId" ColumnName="AgendaId" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+        </EntityContainerMapping>
+      </Mapping>
+    </edmx:Mappings>
+  </edmx:Runtime>
+  <!-- EF Designer content (DO NOT EDIT MANUALLY BELOW HERE) -->
+  <Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
+    <Connection>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="MetadataArtifactProcessing" Value="EmbedInOutputAssembly" />
+      </DesignerInfoPropertySet>
+    </Connection>
+    <Options>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="ValidateOnBuild" Value="true" />
+        <DesignerProperty Name="EnablePluralization" Value="false" />
+        <DesignerProperty Name="IncludeForeignKeysInModel" Value="true" />
+        <DesignerProperty Name="UseLegacyProvider" Value="false" />
+        <DesignerProperty Name="CodeGenerationStrategy" Value="None" />
+      </DesignerInfoPropertySet>
+    </Options>
+    <!-- Diagram content (shape and connector positions) -->
+    <Diagrams></Diagrams>
+  </Designer>
+</edmx:Edmx>

@@ -1,0 +1,48 @@
+﻿@{
+    List<SelectListItem> departamentos = new List<SelectListItem>();
+    List<WWeb.UI.WebformMVC.Tb_Departamento> deptos = new WWeb.UI.WebformMVC.CobnetAdapter().ListarDepartamentos().OrderBy(d => d.Dep_Nome).ToList<WWeb.UI.WebformMVC.Tb_Departamento>();
+    foreach (WWeb.UI.WebformMVC.Tb_Departamento dep in deptos)
+    {
+        departamentos.Add(new SelectListItem() { Text = dep.Dep_Nome.ToUpper(), Value = dep.Dep_ID.ToString() });
+    }
+
+}
+<div class="content_create">
+    @using (Html.BeginForm())
+    {
+        @Html.AntiForgeryToken()
+        @Html.ValidationSummary()
+        <table style="width:100%;">
+            <tr>
+                <td>
+                    <div class="editor-label">
+                        Departamento
+                    </div>
+                    <div class="editor-field">
+                        @Html.DropDownList("Dep_ID", departamentos)
+                    </div>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <div class="editor-label">
+                        Acesso
+                    </div>
+                    <div class="editor-field">
+                        <div class="editor-field">
+                            <input type="checkbox" name="cb_manu" /> Manutenção
+                            <input type="checkbox" name="cb_conf" /> Configurações<br />
+                            <input type="checkbox" name="cb_moni" /> Monitoramento
+                            <input type="checkbox" name="cb_rela" /> Relatórios
+                        </div>
+                    </div>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <input type="submit" value="Cadastrar" />
+                </td>
+            </tr>
+        </table>
+    }
+</div>

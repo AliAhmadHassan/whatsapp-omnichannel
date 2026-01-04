@@ -1,0 +1,111 @@
+﻿@model IEnumerable<WWeb.UI.WebformMVC.Models.Carga>
+
+    @using MvcModalDialog
+    @{
+        Layout = "~/Views/Shared/_Layout.cshtml";
+    }
+
+    <div id="tabela" class="grid">
+        <br />
+        <div id="nome-pagina">
+            » Cargas Cadastradas
+        </div>
+        <br />
+        <br />
+        <table class="footable" data-page-size="10">
+            <caption>
+                &nbsp;&nbsp;&nbsp;&nbsp;Cargas Cadastradas
+                @Ajax.ActionImageLink("../Content/img/btn-add3.png", "Cadastro", "Enriquecimento", null, "Cadastrar nova carga")
+            </caption>
+
+            <thead>
+                <tr>
+                    <th style="width:50px;">
+                        Id
+                    </th>
+                    <th>
+                        Descrição
+                    </th>
+                    <th style="width:150px;">
+                        Data Envio
+                    </th>
+
+
+                    <th style="width:100px;">
+                        Total Linhas
+                    </th>
+                    <th>
+                        Usuário
+                    </th>
+                    <th style="width:150px;">
+                        Data Processamento
+                    </th>
+                    <th style="width:100px;">
+                        Situação
+                    </th>
+                    <th>
+
+                    </th>
+                </tr>
+            </thead>
+
+            <tbody>
+                @foreach (WWeb.UI.WebformMVC.Models.Carga item in Model)
+            {
+                    <tr>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.Id)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.Descricao)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.DataEnvio)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.TotalLinhas)
+                        </td>
+                        <td>
+                            @{
+                                var usu = new WWeb.UI.WebformMVC.CobnetAdapter().ObterUsuario((int)item.Usuario);
+                                <span>@usu.Us_Nome</span>
+                            }
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.DataProcessamento)
+                        </td>
+                        <td>
+                            @if (item.ProcessamentoStatus == 0)
+                            {
+                                <span>Aguardando</span>
+                            }
+                            else if (item.ProcessamentoStatus == 1)
+                            {
+                                <span>Processando</span>
+                            }
+                            else if (item.ProcessamentoStatus == 2)
+                            {
+                                <span>Finalizado</span>
+                            }
+                        </td>
+
+                        <td style="width:30px; text-align:center;">
+                            <a href='@Url.Action("DownloadClientes", "Enriquecimento",new { @id_carga = item.Id })'>
+                                <img src='@Url.Content("~/Content/img/btn-detalhes.png")' title="Baixar Resultados" />
+                            </a>
+                            
+                        </td>
+                    </tr>
+            }
+            </tbody>
+
+            <tfoot class="hide-if-no-paging" style="text-align:center">
+                <tr>
+                    <td colspan="8" style="height:30px; text-align:center; background-color:#cccccc; color:#444444; line-height:30px;">
+                        Registro(s) Encontrado(s): @Model.Count().ToString("0000")
+                        <div class="pagination pagination-centered"></div>
+                    </td>
+                </tr>
+            </tfoot>
+        </table>
+    </div>

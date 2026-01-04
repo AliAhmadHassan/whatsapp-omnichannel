@@ -1,0 +1,58 @@
+﻿@model WWeb.UI.WebformMVC.Models.DTO.AgendaDTO
+
+<div class="content_create">
+
+    @using (Html.BeginForm())
+    {
+        @Html.AntiForgeryToken()
+        @Html.ValidationSummary()
+
+        <table style="width:100%;">
+            <tr>
+                <td>
+                    <div class="editor-field">
+                        <div class="editor-label">
+                            @Html.LabelFor(model => model.Data)
+                        </div>
+
+                        <div class="editor-field">
+                            @Html.TextBoxFor(model => model.Data)
+                            @Html.ValidationMessageFor(model => model.Data)
+                        </div>
+                    </div>
+                </td>
+            </tr>
+            <tr>
+                <td>
+
+                    <div class="editor-label">
+                        @Html.LabelFor(model => model.Anotacao)
+                    </div>
+
+                    <div class="editor-field">
+                        @Html.TextAreaFor(model => model.Anotacao, new { style = "height:80px; width:4  50px; font-size:16px;" })
+                        @Html.ValidationMessageFor(model => model.Anotacao)
+                    </div>
+                </td>
+            </tr>
+        </table>
+        <p>
+            <input type="submit" value="Cadastrar" />
+        </p>
+    }
+</div>
+
+<script>
+    $(function () {
+        $("#Data").datepicker({
+            dateFormat: 'dd/mm/yy',
+            dayNames: ['Domingo', 'Segunda', 'Terça', 'Quarta', 'Quinta', 'Sexta', 'Sábado'],
+            dayNamesMin: ['D', 'S', 'T', 'Q', 'Q', 'S', 'S', 'D'],
+            dayNamesShort: ['Dom', 'Seg', 'Ter', 'Qua', 'Qui', 'Sex', 'Sáb', 'Dom'],
+            monthNames: ['Janeiro', 'Fevereiro', 'Março', 'Abril', 'Maio', 'Junho', 'Julho', 'Agosto', 'Setembro', 'Outubro', 'Novembro', 'Dezembro'],
+            monthNamesShort: ['Jan', 'Fev', 'Mar', 'Abr', 'Mai', 'Jun', 'Jul', 'Ago', 'Set', 'Out', 'Nov', 'Dez'],
+            nextText: 'Próximo',
+            prevText: 'Anterior'
+        });
+    });
+</script>

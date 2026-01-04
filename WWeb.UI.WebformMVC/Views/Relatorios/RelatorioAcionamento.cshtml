@@ -1,0 +1,90 @@
+﻿@model IEnumerable<WWeb.UI.WebformMVC.Models.DTO.RelatorioAcionamentoDTO>
+    @using MvcModalDialog
+    @{
+        Layout = "~/Views/Shared/_Layout.cshtml";
+    }
+
+    <script src="~/Scripts/relatorios.js"></script>
+
+    @using (Html.BeginForm())
+    {
+        @Html.AntiForgeryToken()
+        @Html.ValidationSummary()
+
+        <div id="tabela" class="grid">
+            <br />
+            <div id="nome-pagina">
+                » Clientes x Data Acionamento
+            </div>
+            <br />
+            <br />
+            <div style="width:100%; height:50px; text-align:center; display:table-cell;" id="painel-data">
+                <fieldset style="border:1px solid #fff; color:#fff; font-weight:bold; text-align:left">
+                    <legend style="color:#fff;">Selecione o período: </legend>
+                    <table style="width:400px;">
+                        <tr>
+                            <th>Início</th>
+                            <th>Fim</th>
+                            <th></th>
+                        </tr>
+                        <tr>
+                            <td>@Html.TextBox("data_inicio", null, new { @class = "data" })</td>
+                            <td>@Html.TextBox("data_fim", null, new { @class = "data" })</td>
+                            <td><input type="submit" value="Buscar" id="submit" /></td>
+                        </tr>
+                    </table>
+                </fieldset>
+            </div>
+            <br />
+            <fieldset style="border:1px solid #fff; color:#fff; font-weight:bold; text-align:left">
+                <legend style="color:#fff;">Resultado do Filtro: </legend>
+                <table class="footable" data-page-size="30">
+                    <caption>
+                        &nbsp;&nbsp;&nbsp;&nbsp;Registros Filtrados
+                    </caption>
+
+                    <thead>
+                        <tr>
+                            <th>
+                                Data
+                            </th>
+                            <th style="width:100px;">
+                                Quantidade
+                            </th>
+
+                            <th style="width:80px;">
+
+                            </th>
+                        </tr>
+                    </thead>
+
+                    <tbody>
+                        @foreach (WWeb.UI.WebformMVC.Models.DTO.RelatorioAcionamentoDTO item in Model)
+                        {
+                            <tr>
+                                <td>
+                                    @Html.DisplayFor(modelItem => item.Data)
+                                </td>
+                                <td>
+                                    @Html.DisplayFor(modelItem => item.Quantidade)
+                                </td>
+
+                                <td style="width:60px; text-align:center;">
+                                    @Ajax.ActionImageLink("../Content/img/btn-detalhes.png", "ClientesPelaData", "Relatorios", new { @data_acionamento = Convert.ToDateTime(item.Data) }, "Visualizar clientes")
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+
+                    <tfoot class="hide-if-no-paging" style="text-align:center">
+                        <tr>
+                            <td colspan="3" style="height:30px; text-align:center; background-color:#cccccc; color:#444444; line-height:30px;">
+                                Registro(s) Encontrado(s): @Model.Count().ToString("0000")
+                                <div class="pagination pagination-centered"></div>
+                            </td>
+                        </tr>
+                    </tfoot>
+                </table>
+            </fieldset>
+        </div>
+    }

@@ -1,0 +1,8 @@
+﻿@model IEnumerable<WWeb.UI.WebformMVC.Models.MensagemPredefinida>
+   
+    @foreach (WWeb.UI.WebformMVC.Models.MensagemPredefinida item in Model)
+    {
+        <div class="content_mensagem_item">
+            @(item.Mensagem)
+        </div>
+    }

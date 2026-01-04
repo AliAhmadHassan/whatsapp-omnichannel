@@ -1,0 +1,79 @@
+﻿@model IEnumerable<WWeb.UI.WebformMVC.Models.DTO.ClienteDTO>
+    @using MvcModalDialog
+    
+    @System.Web.Optimization.Scripts.Render("~/bundles/wweb")
+
+    @System.Web.Optimization.Styles.Render("~/Content/themes/base/css")
+    @System.Web.Optimization.Styles.Render("~/Content/Css")
+    <div id="tabela" class="grid">
+        <br />
+        <div id="nome-pagina">
+            » Clientes Cadastrados
+        </div>
+        <br />
+        <table class="footable" data-page-size="10">
+            <caption>
+                <span style="font-size:13px; color:#fff; float:left; margin-left:15px; "> Clientes Onlines - @(Model.Count().ToString("0000")) </span>
+            </caption>
+
+            <thead>
+                <tr>
+                    <th style="width:130px;">
+                        Telefone Cliente
+                    </th>
+                    <th>
+                        Nome Cliente
+                    </th>
+                    <th style="width:130px;">
+                        CPF
+                    </th>
+
+                    <th style="width:160px;">
+                        Últ. Visualização
+                    </th>
+                    <th style="width:160px;">
+                        Data Cadastro
+                    </th>
+                    <th></th>
+                </tr>
+            </thead>
+
+            <tbody>
+                @foreach (WWeb.UI.WebformMVC.Models.DTO.ClienteDTO item in Model)
+            {
+                <tr>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.TelefoneCliente)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.NomeCliente)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Cpf)
+                    </td>
+
+                    <td>
+                        @Html.DisplayFor(modelItem => item.DataVisualizacao)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.DataHoraRegistro)
+                    </td>
+
+                    <td style="width:60px; text-align:center;">
+                        @Ajax.ActionImageLink("../Content/img/zap5.png", "Conversa", "BatePapo", new { @telefone_cliente = item.TelefoneCliente, @nome_cliente = item.NomeCliente, @telefone_orcozol = new WWeb.UI.WebformMVC.Models.WWebEntities().Telefones.Where(t => t.TelefoneCliente == item.TelefoneCliente).FirstOrDefault().TelefoneOrcozol, @cpf_cliente = item.Cpf }, "Visualização da Negociação")
+                    </td>
+                </tr>
+                }
+            </tbody>
+
+            <tfoot class="hide-if-no-paging" style="text-align:center">
+                <tr>
+                    <td colspan="6" style="height:30px; text-align:center; background-color:#cccccc; color:#444444; line-height:30px;">
+                        Registro(s) Encontrado(s): @Model.Count().ToString("0000")
+                        <div class="pagination pagination-centered"></div>
+                    </td>
+                </tr>
+            </tfoot>
+        </table>
+    </div>
+
